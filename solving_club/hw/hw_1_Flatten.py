@@ -4,51 +4,93 @@
 # width = 100, height 1~ 100, dump_n 1 ~ 1000
 # dump 이내 평탄화 완료시 그 때의 고저 차이 반환
 # T = 10
-# 맨위에서 부터 같은 행에 없으면 다음으로 넘어감
-# 그걸 맨 아래서 부터 채욱기
+T = 10
+for tc in range(1, T + 1):
+    N = int(input())
+    box = list(map(int, input().split()))
+
+    # N 이 0보다 크면 덤프 횟수가 남아 있는 것
+    # N 이 0이 될 때까지 평탄화 작업 계속 한다 한번 할 때 마다 1씩 감소
+    while N > 0:
+        # 제일 높은 상자가 어디있는데?
+        max_idx = 0
+        # 상자의 높이 최대값
+        max_height = 0
+        # 제일 낮은 상자가 어디있는데?
+        min_idx = 0
+        # 상자의 높이 최소값
+        min_height = 100
+
+        # 가로의 길이 100 만큼 반복하면서 최대값, 최소값 찾기
+        # 상자를 옮기면 높이가 변하기 때문에 그 위치도 기억해야함
+        for i in range(100):
+            # i 번째 상자의 높이 : box[i]
+            # i 번째 상자의 높이가 지금까지 내가 알고있던 상자높이보다 높으면 갱신
+            if box[i] > max_height:
+                max_height = box[i]
+                max_idx = i
+
+            if box[i] < min_height:
+                min_height = box[i]
+                min_idx = i  # 제일 낮은 상자 위치 기억
+
+        # 100개의 상자를 다 확인하고 나서
+        # 제일 높은 위치에 있는 상자 하나를 제일 낮은 위치에 있는 곳으로 옮긴다.
+        # 제일 높은 곳 높이 -1, 제일 낮은 곳 높이 +1
+        box[max_idx] -= 1
+        box[min_idx] += 1
+
+        N -= 1
+
+        # 평탄화 작업이 끝 마지막에 한번 더 구해줘야함
+    max_height = 0
+    min_height = 100
+
+    for i in range(100):
+        if box[i] > max_height:
+            max_height = box[i]
+
+        if box[i] < min_height:
+            min_height = box[i]
+
+    result = max_height - min_height
+
+    print(f'{tc} {result}')
+
+    # ====================내풀이
+
 T = 10
 for tc in range(1, T + 1):
     dump = int(input())
-    box_height = list(map(int, input().split()))
-    count = [0] * 101  # 전체 박스 상황 알려주는 리스트
+    box = list(map(int, input().split()))
 
-    for i in range(len(box_height)):
-        # 박스를 높이별 개수로 나타냄, 자동으로 오름차순
-        count[box_height[i]] += 1
+    # 최고, 최저 박스 높이 값 설정
+    max_box = 0
+    min_box = 100
+    # 가로 길이 100 , 최대 높이 100이므로 각 높이에 해당하는 인덱스에 개수 추가
+    count = [0] * 101
+    for i in range(100):
+        count[box[i]] += 1  # count의 box[i] 인덱스에 개수 추가
+        if max_box < box[i]:  # 반복문 도는 김에 박스 높이들 중 최대 최소값 찾기
+            max_box = box[i]
+        if min_box > box[i]:
+            min_box = box[i]
 
-    max_box = 1  # 최고점
-    min_box = 100  # 최저점
-
-    for i in range(0, 100):
-        if box_height[i] > max_box:
-            max_box = box_height[i]
-        if box_height[i] < min_box:
-            min_box = box_height[i]
-
-    # 박스 높이별 개수에서 높이가 인덱스 count(max)는 현재 max인 값의 개수를 보여준다
-    # 최대값 최소값 들이 1씩 감소, 증가 하므로 count를 이용하여 양쪽의 개수를 줄이고 중앙쪽의 개수를 올리면 된다
-    # 그러므로 와일문이 조건을 만족할 때까지 max의 개수는 줄이고 min의 개수는 올린다
-    # 이때 max 와 비교할 때 보면 677에서 우측부터 max는 7 7 7이어야 한다. 개수를 조작하는 거지
-    # 값 자체를 바꾸는게 아니라, max를 각 인덱스 즉 높이 별로 개수를 다 소진시켰을 때 max가 변하도록 한다.
-    # count(max)가 4면 dump를 하며 개수 1씩 줄임 만약 개수 0이 되면 max 다음 인덱스
-    # 6777 같은 경우 max = 7 개수 3 => 0 , max = 6
-    # count(min) 도 max와 같이 갱신 필요
     while dump > 0:
-        if max_box - min_box <= 1:
+        if max_box - min_box < 2:
             break
-        # max 쪽 개수 조절
+        # max_box의 개수를 줄이고 낮은값의 개수 올림
         count[max_box] -= 1
         count[max_box - 1] += 1
-        # min 쪽 개수 조절
+        # min_box의 개수를 줄이고 높은 값의 개수 올림
         count[min_box] -= 1
         count[min_box + 1] += 1
-        # 만약 count(max) 개수 0이 되면 max 값 갱신
+        # 만약에 count[max_box]의 값이 0이 되면 max_box 값 갱시
         if count[max_box] == 0:
             max_box -= 1
-        # 만약 count(min) 개수 0이 되면 min 값 갱신
         if count[min_box] == 0:
             min_box += 1
-        # 위의 과정이 dump 이므로 전체 제한 덤프 수에서 1만큼 감소시키기
+        # 위의 과정 dump 이므로
         dump -= 1
 
     result = max_box - min_box
