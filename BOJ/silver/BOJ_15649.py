@@ -2,6 +2,8 @@ N, M = map(int, input().split())
 # 길이 M 인 수열
 # 1 ~ N 까지 중에서
 # 전체 정령 숫자는 NPM
+def sada():
+    pass
 all = 1
 for n in range(N,N-M,-1):
     all *= n
@@ -23,10 +25,11 @@ for r in range(N):
     for plus_r in range(all//N//(N-1)):
         second =  r * (all//N//(N-1)) + plus_r
 
-
-
-
-
 print(numbers)
 
+arr = [1,2,3,4]
+bit = [0,0,0,0]
+for i in range(M):
+    for j in range(2):
+        bit[i] = j
 

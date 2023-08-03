@@ -1,4 +1,8 @@
 # 100X100 차원 배열
+import sys
+
+sys.stdin = open('sum_input.txt', 'r')
+
 T = 10
 for tc in range(1, T + 1):
     tc = int(input())
