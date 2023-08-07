@@ -20,17 +20,20 @@ for tc in range(1, T + 1):
         for lc in range(1, N - 1): # 행 왼쪽부터 탐색
             if abs(land[r][lc] - land[r][lc + 1]) > 1:
                 possible.append(1)
+                break
             else:
                 if land[r][lc+1] > land[r][lc]:
                     if left >= X:
                         if lc - X + 1 >= 0:
-                            for k in range(lc - X + 1, lc):
+                            for k in range(lc - X + 1, lc+1):
                                 slope[k] += 1
-                                left = 1
+                            left = 1
                         else:
                             possible.append(1)
+                            break
                     else:
                         possible.append(1)
+                        break
                 elif land[r][lc + 1] == land[r][lc]:
                     left += 1
                 else:
@@ -42,22 +45,25 @@ for tc in range(1, T + 1):
             for rc in range(N-1, 0, -1):
                 if abs(land[r][rc] - land[r][rc - 1]) > 1:
                     possible.append(1)
+                    break
                 else:
                     if land[r][rc - 1] > land[r][rc]:
                         if right >= X:
                             if rc + X - 1 < N:
                                 for k in range(rc, rc + X):
                                     slope[k] += 1
-                                    right = 1
+                                right = 1
                             else:
                                 possible.append(1)
+                                break
                         else:
                             possible.append(1)
+                            break
                     elif land[r][rc - 1] == land[r][rc]:
                         right += 1
                     else:
                         right = 1
-
+            print(slope)
             if 1 in possible:
                 continue
             else:
@@ -72,7 +78,7 @@ for tc in range(1, T + 1):
                     airstrip += 1
                 else:
                     continue
-
+    print(f'#{tc} {airstrip}')
     # 열 우선탐색
     for c in range(0, N):
         up = 1
@@ -83,17 +89,20 @@ for tc in range(1, T + 1):
         for ur in range(1, N - 1):  # 위쪽부터 탐색
             if abs(land[ur+1][c] - land[ur][c]) > 1:
                 possible.append(1)
+                break
             else:
                 if land[ur+1][c] > land[ur][c]:
                     if up >= X:
                         if ur - X + 1 >= 0:
-                            for k in range(ur - X + 1, ur):
+                            for k in range(ur - X + 1, ur+1):
                                 slope[k] += 1
-                                left = 1
+                            up = 1
                         else:
                             possible.append(1)
+                            break
                     else:
                         possible.append(1)
+                        break
                 elif land[ur+1][c] == land[ur][c]:
                     up += 1
                 else:
@@ -105,22 +114,25 @@ for tc in range(1, T + 1):
             for dr in range(N - 1, 0, -1):
                 if abs(land[dr-1][c] - land[dr][c]) > 1:
                     possible.append(1)
+                    break
                 else:
                     if land[dr-1][c] > land[dr][c]:
                         if down >= X:
                             if dr + X - 1 < N:
                                 for k in range(dr, dr + X):
                                     slope[k] += 1
-                                    down = 1
+                                down = 1
                             else:
                                 possible.append(1)
+                                break
                         else:
                             possible.append(1)
+                            break
                     elif land[dr-1][c] == land[dr][c]:
                         down += 1
                     else:
                         down = 1
-
+            print(slope)
             if 1 in possible:
                 continue
             else:

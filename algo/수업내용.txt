@@ -96,7 +96,6 @@ def selectionSort(a, k):
     return a[k-1]
 ```
 
-
 완전 검색
 문제 해법으로 생각할 수 있는 모든 경우의 수 나열 후 확인
 
