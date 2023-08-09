@@ -11,7 +11,7 @@ for i in range(1<<N):
         nums.append(num)
 # print(nums)
 
-# nums안의 리스트들의 첫번째 숫자에 따라 오름차순정렬
+# nums안의 리스트들 오름차순정렬
 for i in range(len(nums)-1,0,-1):
     for j in range(0, i):
         if str(nums[j]) > str(nums[j+1]):

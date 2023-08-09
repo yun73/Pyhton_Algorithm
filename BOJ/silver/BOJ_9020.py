@@ -30,5 +30,9 @@ for tc in range(1,T+1):
             print(prime1, prime2)
             break # 다른 소수 쌍이 나오지 않게 두 소수의 차이가 최소일 때 스탑
 
-
-
+'''
+3
+8
+10
+16
+'''
