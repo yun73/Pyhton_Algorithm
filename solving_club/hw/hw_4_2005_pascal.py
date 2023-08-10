@@ -71,7 +71,7 @@ for tc in range(1, T + 1):
                 row[j] = memo[i - 1][j - 1] + memo[i - 1][j]
                 row[i - j] = row[j]
             memo[i] = row
-    print(memo)
+    # print(memo)
 
     print(f'#{tc}')
     for i in range(N):
