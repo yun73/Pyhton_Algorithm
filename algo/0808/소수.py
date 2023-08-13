@@ -26,10 +26,19 @@ for i in range(2, 1000):
 n = 1000  # 2부터 1000까지의 모든 수에 대하여 소수 판별
 is_prime = [True for i in range(n + 1)]  # is_prime[i] => 숫자 i 가 소수인가?> 소수면 True
 
-for i in range(2, int(n**0.5) + 1): # 2부터 n 제곱근 까지만 확인
+for i in range(2, int(n ** 0.5) + 1):  # 2부터 n 제곱근 까지만 확인
     if is_prime[i]:  # i가 소수인 경우
         # i를 제외한 모든 i의 배수를 소수가 아니라고 체크
         j = 2
         while i * j <= n:
+            is_prime[i * j] = False
+            j += 1
+
+n = 1000
+is_prime = [True for _ in range(n + 1)]
+for i in range(2, int(n ** 0.5) + 1):
+    if is_prime[i] == True:
+        j = 2
+        while i * j < n:
             is_prime[i * j] = False
             j += 1
