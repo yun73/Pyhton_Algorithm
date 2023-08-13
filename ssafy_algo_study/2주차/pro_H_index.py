@@ -16,7 +16,10 @@ def solution(citations):
     N = len(citations)
     # 앞서 부터 세면서 반복돌 떄마다 1씩 증가해서 이게 행당 논문 이용된 수랑 같은지 비교
     # 아니면 앞에서 부터 하면서 해당 인덱스 값을 이용해 비교
+    max_c = 0
     for i in range(N):
-        if citations[i] <= (i + 1):
-            return citations[i]
+        if citations[i] >= (i + 1):
+            max_c = i + 1
+
+    return max_c
 
