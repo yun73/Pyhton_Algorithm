@@ -1,9 +1,9 @@
 # 백준, 프로그래머스 문제풀이용
 # 오목
 # 탐색방향
-# 오,왼,오아대,왼위대,아래,위, 왼아대,오위대
-dr = [0, 0, 1, -1, 1, -1, 1, -1]
-dc = [1, -1, 1, -1, 0, 0, -1, 1]
+# 오위대,오,오아대,아래
+dr = [-1,0,1,1]
+dc = [1,1,1,0]
 
 
 # 검돌 1, 흰돌 2, 나머지 0
@@ -13,22 +13,21 @@ def omok(r, c, color):
     # 4방향 탐색
     for d in range(4):
         cnt = 1
-        for i in range(2):
-            # 5보다 많으면 이긴거 아니므로
-            # 반대방향 짝지어서 개수 세기
-            # 근데 만약 이긴다면 결국 현재위치가 우승점이 될거임
-            ld = 2 * d + i  # local_d
-            nr = r + dr[ld]
-            nc = c + dc[ld]
-            while 0 <= nr < 19 and 0 <= nc < 19 and board[nr][nc] == color:
-                print(nr, nc)
-                cnt += 1
-                nr += dr[ld]
-                nc += dc[ld]
+        # 근데 만약 이긴다면 결국 현재위치가 우승점이 될거임
+        nr = r + dr[d]
+        nc = c + dc[d]
+        while 0 <= nr < 19 and 0 <= nc < 19 and board[nr][nc] == color:
+            # print(nr, nc)
+            cnt += 1
+            nr += dr[d]
+            nc += dc[d]
+        # 5보다 많으면 이긴거 아니므로
         if cnt == 5:
-            print(color)
-            print(f'{r + 1} {c + 1}')
-            return 1
+            # 탐색 반대 방향에 같은색깔 돌이 없으면 승리
+            if board[r + dr[d] * (-1)][c + dc[d] * (-1)] != color:
+                print(color)
+                print(f'{r + 1} {c + 1}')
+                return 1
     else:
         return 0
 
@@ -47,14 +46,6 @@ for r in range(19):
             result = omok(r, c, board[r][c])
             if result == 1:
                 break
-else:
-    print(0)
-
-    # else:
-    #     c += 1
-    #     if c == 19:
-    #         r += 1
-    #         c = 0
 
 if result == 0:
     print(0)
