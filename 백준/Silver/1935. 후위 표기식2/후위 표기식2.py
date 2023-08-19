@@ -10,7 +10,7 @@ for c in susik:
     # 피연산자가 나왔을 때 숫자를 입력받아 저장하자
     if c not in ['*', '+', '-', '/']:
         # 아직 입력받지 않은 피연산자라면 입력받아서 추가
-        if c not in alpha:
+        if c not in alpha.keys():
             alpha[c] = int(input())
         num.append(alpha[c])
     else: # 연산자가 나오면 숫자 2개 꺼내서 게산하자
