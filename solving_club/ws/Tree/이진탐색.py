@@ -5,11 +5,13 @@ def inorder(i): # 중위순회
     if i > N :
         return
     else:
+        # L
         inorder(2*i) # 왼쪽 서브트리로 이동
+        # V
         Tree[i] = val
         val += 1
+        # R
         inorder(2*i+1) # 오른쪽 서브트리로 이동
-
 
 
 T = int(input())

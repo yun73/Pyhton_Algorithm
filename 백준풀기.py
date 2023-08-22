@@ -1,23 +1,34 @@
-# 퇴사
+'''
+IM 대비 문제 풀기
+'''
+# 수 이어가기
 N = int(input())
-con = [[0]*N for _ in range(2)]
-for i in range(N):
-    T, P = map(int, input().split())
-    con[0][i] = T
-    con[1][i] = P
-
-dp = [0] * (N+1)
-
-for i in range(N-1,-1,-1):
-    # 마지막에서부터 해당 칸 까지의 최대 값
-    if i + con[0][i] -1  > N-1:
-        dp[i] = 0
-    else:
-        # 현재 까지 내 뒤에 올 수 있는 최대값 구해가
-        max_now = max(dp[i + con[0][i]:])
-        if dp[i+con[0][i]] > max_now:
-            dp[i] = dp[i+con[0][i]] + con[1][i]
-        else:
-            dp[i] = max_now + con[1][i]
-
-print(dp[0])
+first = N
+third = 0
+max_second = 0
+max_cnt = 0
+# N//2 보다 작거나 같은 숫자들을 두번 째 수로 넣게 되는 경우 음수 일찍 나옴
+# 따라서 탐색 범위는 N//2 보다 클 때
+# 가장 길게 이을 수 있는 second를 찾자
+for s in range(N // 2, N+1):
+    cnt = 0  # 두번째 숫자가 s일 때 이은 수
+    second = s
+    while first - second >= 0:
+        third = first - second
+        first = second
+        second = third
+        cnt += 1
+    if max_cnt < cnt:
+        max_cnt = cnt
+        max_second = s
+    # 각 second 검사 후 초기화
+    first = N
+# print(max_second)
+# second 구했으니까 이제 해당 숫자 넣었을 때 나오는 숫자 출력
+print(max_cnt+2)
+num = [0] * (max_cnt+2)
+num[0] = N
+num[1] = max_second
+for i in range(2, max_cnt+2):
+    num[i] = num[i - 2] - num[i - 1]
+print(*num)
