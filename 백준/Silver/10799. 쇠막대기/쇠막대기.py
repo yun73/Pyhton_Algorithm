@@ -21,3 +21,29 @@ for i in range(len(all)):
             piece += 1
 
 print(piece)
+
+# 조금더 단순화 해서 푸는 방법
+T = input()
+# 레이저는 항상 '()' 모양이므로 'ㅣ' 로 변환 해놓고
+# 'ㅣ' 가 나올때마다 쇠막대기 개수를 추가해주자
+T = T.replace('()', '|')
+
+st = []
+answer = 0
+
+for i in T:
+    if i == '(':
+        # 여는 괄호는 쇠막대기의 시작점
+        st.append(i)
+    elif i == '|':
+        # 레이저 나오면
+        # 지금까지 있는 쇠막대기 잘리니까
+        # 현재 스택에 있는 개수 = 레이저에 의해 잘린 왼편에 있는 쇠막대기 개수
+        answer += len(st)
+    elif i == ')':
+        # 닫는 괄호 나오면 쇠막대기 하나 빠져나감
+        st.pop()
+        # 레이저 오른편에 있는 쇠막대기 하나 추가
+        answer += 1
+
+print(answer)

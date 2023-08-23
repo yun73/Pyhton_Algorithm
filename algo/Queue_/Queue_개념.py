@@ -27,7 +27,7 @@ def enQueue(item):
     else:
         rear += 1
         Q[rear] = item
-        # Queue.append(a)
+        # Queue_.append(a)
 # 삭제
 # 가장 앞에 있는 원소를 삭제하기 위해
 # front 값을 하나 증가시켜 큐에 남아있게 될 첫번째 원소로 이동
@@ -39,7 +39,7 @@ def deQueue():
     else:
         front += 1
         return Q[front]
-        #return Queue.pop(0)
+        #return Queue_.pop(0)
 
 def isEmpty():
     return front == rear
