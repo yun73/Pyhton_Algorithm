@@ -12,8 +12,9 @@ for tc in range(1,T+1):
     if N == 1:
         dan = str(A[0])
         if len(dan) == 1:
-            if max_dan < int(dan):
-                max_dan = int(dan)
+            # if max_dan < int(dan):
+            #     max_dan = int(dan)
+            break
         else:
             for d in range(1, len(dan)):
                 if int(dan[d]) < int(dan[d - 1]):
@@ -26,8 +27,9 @@ for tc in range(1,T+1):
             for i in range(j):
                 dan = str(A[i] * A[j])
                 if len(dan) == 1:
-                    if max_dan < int(dan):
-                        max_dan = int(dan)
+                    # if max_dan < int(dan):
+                    #     max_dan = int(dan)
+                    continue
                 else:
                     for d in range(1,len(dan)):
                         if int(dan[d]) < int(dan[d-1]):
