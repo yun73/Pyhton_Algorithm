@@ -18,8 +18,9 @@ for tc in range(1, T + 1):
     # 돌 놓기
     for _ in range(M):
         r, c, color = map(int, input().split())
-        r -= 1
-        c -= 1
+        # 주어진 정보에서 실제 좌표처럼 나타냄
+        # 뒤집어줘야됨
+        r , c = c-1, r-1
         print(r, c, color)
         # 일단 현재 위치에 돌을 두자
         board[r][c] = color
@@ -45,7 +46,7 @@ for tc in range(1, T + 1):
                 nr += dr[d]
                 nc += dc[d]
 
-
+        # 게임 진행 상황 볼 수 있는 코드
         for i in range(N):
             for j in range(N):
                 if board[i][j] == 2:
