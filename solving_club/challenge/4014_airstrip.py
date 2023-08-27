@@ -1,104 +1,86 @@
-# N*N 크기의 절벽지대
-# 각 셀은 지형의 높이
-# 길이 x, 높이 1 인 경사로
-# 높이 차이나면 무조건 경사로 써야함
-import sys
+'''
+A 대비 문제 풀기
+'''
+# 경사로 활주로
+def check(strip, N, L):
+    '''
+    경사로 가능한지 체크하는 함수
+    가능하면 1반환
+    불가능하면 0반환
+    '''
+    # 경사로 가능한 곳 체크하는 리스트
+    possible = [0] * N
+    # 경사진데 만나기 전까지 평평한 땅 세면서 가기
+    plat = 1 # 기본적으로 자기자신은 평평한 땅이므로
+    # 내리막도 오르막으로 보고 처리하자
+    # 앞쪽부터 보는 경우
+    for i in range(N-1):
+        # 일단 높이 차이 1보다 큰데 있으면 바로 0 리턴
+        if abs(strip[i+1]-strip[i])>1:
+            return 0
 
-sys.stdin = open("input.txt", "r")
+        # 1칸 올라가야 되면
+        elif strip[i+1] - strip[i] == 1:
+            # 지금까지 누적된 평평한 땅길이와 경사로 길이랑 비교하여 설치 가능한지 검토
+            if plat >= L:
+                # 경사로 설치 가능하다면 해당 지역 표시
+                for j in range(L):
+                    possible[i-j] += 1
+            else: # 불가능하면 바로
+                return 0
+            # 평평한 땅 1로 초기화
+            plat = 1
 
-T = int(input())
-for tc in range(1, T + 1):
-    N, X = map(int, input().split())
-    land = [list(map(int, input().split())) for _ in range(N)]  # 주어지는 지형정보
+        elif strip[i+1] - strip[i] == 0:
+            plat += 1
 
-    # 가능한 활주로의 개수
-    airstrip = 0
+    plat = 1
+    # 뒤쪽부터 보는 경우
+    for i in range(N - 1,0,-1):
+        # 일단 높이 차이 1보다 큰데 있으면 바로 0 리턴
+        if abs(strip[i - 1] - strip[i]) > 1:
+            return 0
 
-    # 행 우선 순회 > 활주로 가능성
-    for r in range(0, N):
-        Differ = [0] * N
-        possible = [1]
-        for c in range(1, N):
-            # 앞뒤 조사하면서 이동할 때 값이 다르면 인덱스 반환
-            if abs(land[r][c] - land[r][c - 1]) > 1:
-                break
-            else:
-                if land[r][c] > land[r][c - 1]:
-                    Differ[c - 1] = 2
-                elif land[r][c] < land[r][c - 1]:
-                    Differ[c] = 1
-        for i in range(N):
-            if Differ[i] == 2:
-                # 탐색 영역 i-x+1, i-2x+1
-                if 0 <= i - X + 1 < N:
-                    if 2 in Differ[(i - X + 2):i]:
-                        possible.append(0)
-                    if 1 in Differ[(i - X + 2):i]:
-                        possible.append(0)
-                    if 0 <= i - 2 * X + 2 < N:
-                        if 1 in Differ[(i - 2 * X + 2):i]:
-                            possible.append(0)
-                else:
-                    possible.append(0)
+        # 1칸 올라가야 되면
+        elif strip[i - 1] - strip[i] == 1:
+            # 지금까지 누적된 평평한 땅길이와 경사로 길이랑 비교하여 설치 가능한지 검토
+            if plat >= L:
+                # 경사로 설치 가능하다면 해당 지역 표시
+                for j in range(L):
+                    possible[i + j] += 1
+            else:  # 불가능하면 바로
+                return 0
+            # 평평한 땅 1로 초기화
+            plat = 1
 
-            elif Differ[i] == 1:
-                # 탐색 영역 i-x+1, i-2x+1
-                if 0 <= i + X - 1 < N:
-                    if 1 in Differ[i:(i + X)]:
-                        possible.append(0)
-                    if 2 in Differ[i:(i + X)]:
-                        possible.append(0)
-                    if 0 <= i + 2 * X - 1 < N:
-                        if 2 in Differ[i:(i + 2 * X-1)]:
-                            possible.append(0)
-                else:
-                    possible.append(0)
+        elif strip[i - 1] - strip[i] == 0:
+            plat += 1
 
-        if 0 not in possible:
-            airstrip += 1
+    # 여기까지 왔으면 이제 경사로 설치구간이 안겹치는지만 확인하면 됨
+    if 2 in possible:
+        return 0
+    else:
+        return 1
 
-    # 열 탐색
-    for c in range(0, N):
-        Differ = [0] * N
-        possible = [1]
-        for r in range(1, N):
-            # 앞뒤 조사하면서 이동할 때 값이 다르면 인덱스 반환
-            if abs(land[r][c] - land[r - 1][c]) > 1:
-                break
-            else:
-                if land[r][c] > land[r - 1][c]:
-                    Differ[r - 1] = 2
-                elif land[r][c] < land[r - 1][c]:
-                    Differ[r] = 1
 
-        for i in range(N):
-            if Differ[i] == 2:
-                # 탐색 영역 i-x+1, i-2x+1
-                if 0 <= i - X + 1 < N:
-                    if 2 in Differ[(i - X + 2):i]:
-                        possible.append(0)
-                    if 1 in Differ[(i - X + 2):i]:
-                        possible.append(0)
-                    if 0 <= i - 2 * X + 2 < N:
-                        if 1 in Differ[(i - 2 * X + 2):i]:
-                            possible.append(0)
-                else:
-                    possible.append(0)
+# N : 지형 크기, L : 경사로 가로 길이
+N, L = map(int, input().split())
+# 지형 높이 정보
+land = [list(map(int, input().split())) for _ in range(N)]
 
-            elif Differ[i] == 1:
-                # 탐색 영역 i-x+1, i-2x+1
-                if 0 <= i + X - 1 < N:
-                    if 1 in Differ[i:(i + X)]:
-                        possible.append(0)
-                    if 2 in Differ[i:(i + X)]:
-                        possible.append(0)
-                    if 0 <= i + 2 * X - 1 < N:
-                        if 2 in Differ[i:(i + 2 * X - 1)]:
-                            possible.append(0)
-                else:
-                    possible.append(0)
+# 경사로 가능한 곳 체크
+ramp = 0
+# 행 열 순회하며 판단
+for r in range(N):
+    # 검사할 행과 열
+    row = [0]*N
+    col = [0]*N
+    for c in range(N):
+        # 검사할 행과열에 해당하는 값들을 넣어주고
+        row[c] = land[r][c]
+        col[c] = land[c][r]
+        # 행과 열을 경사로 건설이 가능한지 검사한다
+    ramp += check(row,N,L)
+    ramp += check(col,N,L)
 
-        if 0 not in possible:
-            airstrip += 1
-
-    print(f'#{tc} {airstrip}')
+print(ramp)
