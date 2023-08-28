@@ -19,4 +19,11 @@ T = int(input())
 for tc in range(1, T+1):
     N,M = map(int, input().split())
     print(dp[N][M])
-
+'''
+ for i in range(N-2):
+     for j in range(i+1,N-1):
+         for k in range(j+1,N):
+         이런식으로 중복안하게 선택하는 방법도 있음
+         근데 이 방식은 선택하는 개수에 따라서 반복문이 하나씩 추가 되므로
+         나누는 영역이 정해져있을 때만...
+'''
