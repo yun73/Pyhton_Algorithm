@@ -4,7 +4,7 @@ M, N = map(int, input().split())
 is_prime = [True] * 1000001
 is_prime[0] = False
 is_prime[1] = False
-for i in range(2,N):
+for i in range(2,int(N**(0.5)) + 1):
     if is_prime[i]:
         j = 2
         while i*j <= N:
