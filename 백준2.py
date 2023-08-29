@@ -27,6 +27,10 @@ def bfs(group):
                 Q.append(i)
                 visited.append(i)
 
+    if set(group) == set(visited):
+        return True
+    else:
+        return False
 
 
 # 구역의 개수
@@ -34,12 +38,12 @@ N = int(input())
 # 구역 인구 정보 1번 부터 N번 구역까지
 people = list(map(int, input().split()))
 # 인접 리스트
-near = [[] for _ in range(N+1)]
+near = [[] for _ in range(N + 1)]
 # N 개 구역의 인접리스트 정보 채우기
-for n in range(1,N+1):
+for n in range(1, N + 1):
     info = list(map(int, input().split()))
     # 들어온 정보의 첫번째 값은 인접한 지역의 개수
-    for i in range(1,info[0]+1):
+    for i in range(1, info[0] + 1):
         # 정해진 방향 없음
         if info[i] not in near[n]:
             near[n].append(info[i])
@@ -56,15 +60,16 @@ print(near)
 # 1,2,3,...N 에서 부분집합의 개수는 2^N 개
 
 # 전체 지역번호 리스트
-all = set(range(1,N+1))
+all = set(range(1, N + 1))
 
 # 인구차이 최소값
 
-for i in range(1<<N):
+
+for i in range(1 << N):
     subset = []
     for j in range(N):
-        if i & (1<<j):
-            subset.append(j+1)
+        if i & (1 << j):
+            subset.append(j + 1)
     # 부분집합이 하나 만들어지면
     # 부분집합에 최소 하나 들어갈 경우에
     if subset and len(subset) != N:
@@ -72,7 +77,7 @@ for i in range(1<<N):
         B = all ^ A
         # 두 부분 집합에 대해서 각 집합이 끊기지 않았는 지 확인 해야 함
         if bfs(subset) and bfs(list(B)):
-            # 만약 두개다 조건을 만족하면
-            # 인구수 계산
+    # 만약 두개다 조건을 만족하면
+    # 인구수 계산
 
 # 두 선거구에 포함된 인구의 차이 최소값

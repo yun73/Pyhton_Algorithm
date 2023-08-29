@@ -84,3 +84,21 @@ for r in range(N):
     ramp += check(col,N,L)
 
 print(ramp)
+
+# 함수 부분을 이런식으로도 가능
+def check_slope(row):
+    cnt = 1
+    for i in range(1, N):
+        if row[i] == row[i-1]:	# 같은 높이라면
+            cnt += 1
+        elif row[i] - row[i-1] == 1 and cnt >= X:   # 높이 1 높아지면
+            cnt = 1
+        elif row[i-1] - row[i] == 1 and cnt >= 0:   # 높이 1 낮아지면
+            cnt = -X + 1
+        else:   # 높이 2 이상 차이나면
+            return 0
+    if cnt >= 0:
+        return 1
+    return 0
+
+# 전치행렬을 사용해도 된다
