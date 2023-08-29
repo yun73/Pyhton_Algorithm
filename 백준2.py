@@ -36,7 +36,7 @@ def bfs(group):
 # 구역의 개수
 N = int(input())
 # 구역 인구 정보 1번 부터 N번 구역까지
-people = list(map(int, input().split()))
+people = [0] + list(map(int, input().split()))
 # 인접 리스트
 near = [[] for _ in range(N + 1)]
 # N 개 구역의 인접리스트 정보 채우기
@@ -50,7 +50,7 @@ for n in range(1, N + 1):
         if n not in near[info[i]]:
             near[info[i]].append((n))
 
-print(near)
+# print(near)
 
 # 두 선거구로 나누자
 # 최소 한개
@@ -63,7 +63,7 @@ print(near)
 all = set(range(1, N + 1))
 
 # 인구차이 최소값
-
+peo = 100*N-100
 
 for i in range(1 << N):
     subset = []
@@ -77,7 +77,21 @@ for i in range(1 << N):
         B = all ^ A
         # 두 부분 집합에 대해서 각 집합이 끊기지 않았는 지 확인 해야 함
         if bfs(subset) and bfs(list(B)):
-    # 만약 두개다 조건을 만족하면
-    # 인구수 계산
+            # 만약 두개다 조건을 만족하면
+            # 인구수 계산
+            sumA = 0
+            sumB = 0
+            for a in A:
+                sumA += people[a]
 
-# 두 선거구에 포함된 인구의 차이 최소값
+            for b in B:
+                sumB += people[b]
+
+            if peo > abs(sumA - sumB):
+                peo = abs(sumA - sumB)
+
+if peo == 100*N-100: # 두 선거구로 나눌수 없는 경우에는
+    print(-1)
+else:
+    # 두 선거구에 포함된 인구의 차이 최소값
+    print(peo)
