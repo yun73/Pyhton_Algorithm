@@ -62,26 +62,26 @@ building = []
 for i in range(1, N+1):
     # 가장 많이 인접한 건물이면
     # 치킨집 한 곳을 이곳으로 정하고 이 경우 들에 대해서만 조합 조사하자
-    if len(near[i]) == many:
-        for j in range(1, N+1):
-            if j != i:  # 두번째 건물은 자기 자신 제외하고
-                # 조합 정해졌으면 접근성 파악하러
-                # 해당 지역에서 접근성 최소값
-                sub_near = bfs(i, j)
+    # if len(near[i]) == many:
+    for j in range(1, N+1):
+        if j != i:  # 두번째 건물은 자기 자신 제외하고
+            # 조합 정해졌으면 접근성 파악하러
+            # 해당 지역에서 접근성 최소값
+            sub_near = bfs(i, j)
 
-                # 해당 지역 접근성이 저장된 것보다 좋으면
-                if nearest > sub_near:
-                    # 건물 리스트를 초기화하고
-                    building = []
-                    nearest = sub_near
-                    # 건물정보를 추가해라
-                    if (min(i, j), max(i, j)) not in building:
-                        building.append((min(i, j), max(i, j)))
-                # 접근성 같으면
-                elif nearest == sub_near:
-                    if (min(i, j), max(i, j)) not in building:
-                        building.append((min(i, j), max(i, j)))
-                # 접근성 크면 아무것도 안해도 돼
+            # 해당 지역 접근성이 저장된 것보다 좋으면
+            if nearest > sub_near:
+                # 건물 리스트를 초기화하고
+                building = []
+                nearest = sub_near
+                # 건물정보를 추가해라
+                if (min(i, j), max(i, j)) not in building:
+                    building.append((min(i, j), max(i, j)))
+            # 접근성 같으면
+            elif nearest == sub_near:
+                if (min(i, j), max(i, j)) not in building:
+                    building.append((min(i, j), max(i, j)))
+            # 접근성 크면 아무것도 안해도 돼
 
 building.sort()
 print(*building[0], nearest)
