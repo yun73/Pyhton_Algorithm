@@ -4,8 +4,12 @@
 # 금으로 이루어져 지나갈 수 없거나, 비어있어서 지나갈 수 있게
 # 인접한 6개의 칸 동서남북 상하 로 1분시간 들여 이동가능
 # 바깥면도 모두 금으로 막혀있음
+import sys
+input = sys.stdin.readline
+
 #       북       남       서       동           상       하
 di = [[0,-1,0], [0,1,0],[0,0,-1], [0,0,1], [-1,0,0], [1,0,0]]
+
 def bfs(e):
     # e 가 큐
     visited[e[0][0]][e[0][1]][e[0][2]] = 1
@@ -29,10 +33,6 @@ def bfs(e):
     return 0
 
 
-
-
-
-
 L = R = C = 1
 while True:
     # L : 층수, R : 한층의 행, C : 한층의 열
@@ -50,12 +50,12 @@ while True:
         building[i] = [input() for _ in range(R)]
         input()
 
-    # 시작 지점부터 탈출 지접을 찾자
+    # 탈출 지점부터 시작지점을 찾자
     visited = [[[0 for _ in range(C)] for _ in range(R)] for _ in range(L)]
     start = []
     end = []
     # 시작점과 끝 점 먼저 찾아놓자
-    for i in range(L): #층수
+    for i in range(L): # 층수
         for r in range(R): # 행수
             for c in range(C): # 열수
                 if building[i][r][c] == 'S':
