@@ -1,21 +1,7 @@
 # # 퀴즈 대회
 # # 주어진 번호는
 # # 십진수 각 자리 값
-#
-# T = int(input())
-# for tc in range(1,T+1):
-#     n, change = input().split()
-#     num = list(n)
-#     print(n)
-#     print(num)
-#     print(change)
-#     # 최대값은 내림차순
-#     # 최대값 됐을 때 남은 교환 횟수 짝수이면 종료
-#     max_value = [] = num.sort(reverse=True)
-#     # 최대값의 인덱스
-#     m = 0
-#     # 바꿀자리 인덱스
-#
+
 
 def swap(cnt):
     global max_pri
