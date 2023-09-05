@@ -1,65 +1,20 @@
-# 스택
-# 정수를 저장하는 스택 구현
+# 단어 뒤집기
 import sys
-input = sys.stdin.readline
+# 입력값 받는 시간 줄이기 위해서
+T = int(sys.stdin.readline())
+for tc in range(1, T+1):
+    # 공백을 기준으로 단어를 구분하여 입력받기
+    words = sys.stdin.readline().split()
+    # print(words)
+    for i in range(len(words)): # 단어 개수만큼 반복
+        # 각 단어들을 뒤집어서 출력, 끝에 공백으로 이어주기
+        print(words[i][::-1], end= " ")
+    # 한문장 출력 끝나면 줄바꿈
+    print()
 
-# 명령의 수
-N = int(input())
-stack = [0]*10000
-top = -1
-for i in range(N):
-    command = input()
-    if 'push' in command:
-        push, num = command.split(' ')
-        print(push, num)
-        top += 1
-        stack[top] = int(num)
-    elif command == 'top':
-        if top == -1:
-            print(-1)
-        else:
-            print(stack[top])
-    elif command == 'size':
-        if top == -1:
-            print(0)
-        else:
-            print(top+1)
-    elif command == 'empty':
-        if top == -1:
-            print(1)
-        else:
-            print(0)
-    elif command == 'pop':
-        if top == -1:
-            print(-1)
-        else:
-            print(stack[top])
-            top -= 1
+'''
+2
+I am happy today
+We want to win the first prize
 
-T = int(input())
-for tc in range(T):
-    N = int(input())
-
-    answer = 0
-
-    answer_l = []
-
-    count = 0
-
-    for i in range(1, N+1):
-        if i == 1:
-            answer = 0
-            answer_l.append(1)
-        if i == 2:
-            answer = 1
-            answer_l.append(2)
-        if i == 3:
-            answer = 3
-            answer_l.append(4)
-        if i >= 4:
-            count = sum(answer_l)
-            answer = count
-            answer_l.append(count)
-            answer_l.pop(0)
-
-    print(answer)
+'''
