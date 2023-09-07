@@ -25,35 +25,6 @@ def area(swan):
                     lake[nr][nc] = i
                     rear += 1
 
-    return q
-
-def go(place, F): # F는 찾을 거
-    global min_cnt
-    # 영역 어느 점으로 부터 출발
-    # 모든 점 다 돌면 끝
-    while place:
-        r, c= place.pop(0)
-        # 현재 위치에서 F 를 만날 때 까지의 거리
-        for dr,dc in [[1,0],[-1,0],[0,1],[0,-1]]:
-            nr = r + dr
-            nc = c + dc
-            cnt = 0
-            while 0 <= nr < R and 0 <= nc < C:
-            # 해당 방향에 #이 있으면 그 방향으로 쭉 가봐
-                # 만약 내가 찾는 영역이 나오면
-                if lake[nr][nc] == F:
-                    if min_cnt > cnt:
-                        min_cnt = cnt
-                    break
-                # 이 나올 때는 계속 가봐
-                elif lake[nr][nc] == "X":
-                    nr += dr
-                    nc += dc
-                    cnt += 1
-
-                else: # 다른 영역 도착하는 경우니까 그냥 끝내
-                    break
-
 
 R, C = map(int, input().split())
 lake = [list(input()) for _ in range(R)]
