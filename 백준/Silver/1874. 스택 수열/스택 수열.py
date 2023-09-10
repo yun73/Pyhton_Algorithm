@@ -16,6 +16,7 @@ for _ in range(n):
     num = int(sys.stdin.readline())
     # pop 할 때 뒤에 나올 숫자를 빼버리면 안됨
     # if num in stack: 이거 때문에 시간 초과 나는듯
+    # 리스트 안에 있는 지 찾으면 리스트를 한바퀴 도는 거나 똑같으니까
     # 찾아야할 숫자이하에서 나올 때까지
     if num >= before:
         for i in range(before, num + 1):
