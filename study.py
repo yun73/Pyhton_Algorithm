@@ -12,7 +12,7 @@
 import sys
 
 def bfs(r,c):
-
+    pass
 
 N, M = int(sys.stdin.readline().split())
 # 부술수 있는 횟수
