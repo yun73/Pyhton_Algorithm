@@ -3,7 +3,7 @@
 # 맥주 한박스(20개) 들고 출밯
 # 목이 마르면 안됨 > 50티어에 한병씩
 # 50미터 가려면 그 직전에 마셔야 해
-# 편의점 들리면 빈병 버리고 새 맥주병 살 수 있오= 지금까지 먹은거를 세줘야해
+# 편의점 들리면 빈병 버리고 새 맥주병 살 수 있어
 # 박스에는 최대 20개
 # 편의점 나오고도 한병 마셔야 해
 import sys
@@ -63,3 +63,50 @@ for tc in range(1,T+1):
 
     result = bfs(home_x,home_y, goal_x, goal_y)
     print(result)
+
+
+'''
+규훈이형 코드
+
+1. 입력들 graph로 연결
+
+2. x + y <= 1000이면 갈 수 있는 거리다
+
+3. abs(현재 x - 도착지 x) + abs(현재 y - 도착지 y) <= 1000이라면 happy
+
+4. 맥주 개수를 굳이 count 해 줄 필요는 없다. - 어차피 편의점 들리면 다시 full로 채워질 것
+'''
+
+import sys
+input = sys.stdin.readline
+T = int(input())
+
+def bfs(sx, sy):
+    queue = [(sx, sy)]
+    while queue:
+        x, y = queue.pop(0)
+        # 만약 현재 위치에서 페스티벌까지 갈 수 있다면
+        if abs(x - festivalx) + abs(y - festivaly) <= 1000:
+            return 'happy'
+        else:
+            for idx, convenience in enumerate(convenience_stores):
+                nx, ny = convenience[0], convenience[1]
+                # 만약 편의점이 맥주가 다 떨어지기 전에 존재한다면
+                if not visited[idx] and abs(x - nx) + abs(y - ny) <= 1000:
+                    queue.append((nx, ny))
+                    visited[idx] = 1
+
+    return 'sad'
+
+for _ in range(T):
+    # input
+    n = int(input())
+    convenience_stores = [0] * n
+    homex, homey = map(int, input().split())
+    for i in range(n):
+        storex, storey = map(int, input().split())
+        convenience_stores[i] = (storex, storey)
+    festivalx, festivaly = map(int, input().split())
+
+    visited = [0] * (n + 1)
+    print(bfs(homex, homey))
