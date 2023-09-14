@@ -1,36 +1,33 @@
-'''
-L : 커서를 완쪽으로 한칸(맨 앞이면 무시)
-D : 커서를 오른쪽으로 한칸(맨뒤 무시)
-B : 커서 왼쪽 문자삭제 (커서 문장 맨앞이면 무시)
-P $: $ 문자 커서 왼쪽에 추가
-'''
-# 맨 뒤 커서 시작 명령다 수행하고 입력된 문자열 구해
-import sys
+# 단어 뒤집기
+# 문자열 S 단어만 뒤집기
+# 단어 사이 공백
+# <> 안에는 부분 문자열 안뒤집어
 
-# 스택두개 사용
-# 커서 이동은 left 커서 right
-# 왼쪽 이동이면 왼쪽거 마지막을 오른쪽 처음으로
+S = input()
+# 부분 단어 판단
+result = ''
+i = 0
+while i < len(S):
+    stack = '' # 한 덩어리
+    # 여는 괄호 나오면
+    if S[i] == '<':
+        while True:
+            if S[i] == '>':
+                result += S[i]
+                i += 1
+                break
+            # 닫는 괄호 나올 때까지
+            result += S[i]
+            i += 1
 
-# 입력 문자열
-# 스택
-left = list(input())
-# 뒤집은걸로 생각 그래야 커서 왼쪽 두번 이동하고 오른쪽 이동시 마지막에 넣을걸 꺼내옴
-right = []
-# 문자열 길이
-N = len(left)
-#명령어 개수
-M = int(sys.stdin.readline())
+    else: # 아닐 경우엔
+        while True:
+            if i == len(S)-1 or S[i] == ' ' :# 공백 나올 때까지
+                stack += S[i]
+                result += stack
+                i+=1
+                break
+            stack = S[i] + stack
+            i += 1
 
-for _ in range(M):
-    command = list(sys.stdin.readline().rstrip().split())
-    if command[0] == 'L' and left:
-        right.append(left.pop())
-    elif command[0] == 'D' and right:
-        left.append(right.pop())
-    elif command[0] == 'B' and left:
-        left.pop()
-    elif command[0] == 'P':
-        left.append(command[1])
-
-answer = left + right[::-1]
-print(''.join(answer))
+print(result)

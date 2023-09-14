@@ -4,7 +4,6 @@
 # 외부 공기 부분 -1 로 바꾸자
 def check_air(air):
     global cnt
-    global visited
     global arr
 
     visited = [[0 for _ in range(M)] for _ in range(N)]
