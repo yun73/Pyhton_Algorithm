@@ -12,10 +12,8 @@ for r in range(R):
         if arr[r][c] == 'X':
             land.append((r,c))
 sea =[]
-min_row = R
-max_row = -1
-min_col = C
-max_col = -1
+row = []
+col = []
 while land:
     r,c = land.pop(0)
     cnt = 0
@@ -34,20 +32,14 @@ while land:
     # 한곳 조사 다 끝났어
     # 바다가 아닐때의 행, 열값 최대 최소 구해야해
     if cnt <= 2:
-        if min_row > r:
-            min_row = r
-        if min_col > c:
-            min_col = c
-        if max_row < r:
-            max_row = r
-        if max_col < c:
-            max_col = c
+        row.append(r)
+        col.append(c)
 
 while sea:
     r,c = sea.pop(0)
     arr[r][c] = '.'
 
-for i in range(min_row, max_row+1):
-    for j in range(min_col, max_col+1):
+for i in range(min(row), max(row)+1):
+    for j in range(min(col), max(col)+1):
         print(arr[i][j], end='')
     print()
