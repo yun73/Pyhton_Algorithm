@@ -18,7 +18,7 @@
 
 <p style="text-align: center;"><img alt="" src="https://www.acmicpc.net/upload/images/t2n2122.gif" style="height:59px; width:380px"></p>
 
-[!점화식](img.png)
+[!점화식](백준/Silver/11727.2×n타일링 2/img.png)
 
 ### 입력 
 
