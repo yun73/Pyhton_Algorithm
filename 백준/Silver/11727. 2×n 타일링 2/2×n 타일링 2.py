@@ -13,5 +13,6 @@ for i in range(5,n+1):
         dp[i] = 2*dp[i-1] + 1
     else:
         dp[i] = 2*dp[i-1] - 1
-
+# 정석 풀이는
+# dp[i] = 2*dp[i-2] + dp[i-1]
 print(dp[n]%10007)

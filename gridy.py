@@ -1,13 +1,17 @@
-# 처음 수는 무조건 숫자
-# -와 -or 끝 사이는 더해줘서 빼주면 무조건 최소값
-susik = list(input().split('-')) # '-'로 나눠서 + 묶음 덩어리 리스트 생성
-result = 0
-for i in range(len(susik)):
-    # 각 묶음을 '+'로 나눠서 더한값을 최종 계산값에다가
-    sik = map(int,susik[i].split('+'))
-    if i == 0:
-        result += sum(sik)
-    else:
-        result -= sum(sik)
+# 2xn 타일링 2
+# 2xn 크기의 직사각형을 1x2, 2x1 , 2x2 타일로 채우는 방법의 수
+dp = [0]*1001
+dp[1] = 1
+dp[2] = 3
+dp[3] = 5
+dp[4] = 11
+dp[5] = 21
 
-print(result)
+n = int(input())
+for i in range(5,n+1):
+    if not i%2:
+        dp[i] = 2*dp[i-1] + 1
+    else:
+        dp[i] = 2*dp[i-1] - 1
+
+print(dp[n]%10007)

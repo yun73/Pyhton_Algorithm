@@ -18,6 +18,8 @@
 
 <p style="text-align: center;"><img alt="" src="https://www.acmicpc.net/upload/images/t2n2122.gif" style="height:59px; width:380px"></p>
 
+[!점화식](img.png)
+
 ### 입력 
 
  <p>첫째 줄에 n이 주어진다. (1 ≤ n ≤ 1,000)</p>
