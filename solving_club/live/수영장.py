@@ -9,45 +9,21 @@
 다음 해의 이용권만을 구매할 수 있기 때문에 3달 이용권은 11월, 12월, 1윌 이나 12월, 1월, 2월 동안 사용하도록 구매할 수는 없다.)
 1년 이용권 : 매년 1월 1일부터
 '''
-def bt(r,total):
+def bt(r,total,dm):
     global min_total
-    global visited
 
-    if r == 12:
+    if r >= 12:
         if min_total > total:
             min_total = total
         return
     else:
-        if visited[r] == 0:
-            if plan[r]:
-                visited[r] = 1
-                # 1일
-                bt(r+1,total + day*plan[r])
-                visited[r] = 0
+        if plan[r]:
+            bt(r+1,total+dm[r],dm)
+            # 3달
+            bt(r + 3, total + month_3,dm)
 
-                # 1달
-                visited[r] = 1
-                bt(r+1, total + month)
-                visited[r] = 0
-                # 3달
-                if r <= 9:
-                    visited[r+1] = 1
-                    visited[r+2] = 1
-                    bt(r+1,total + month_3)
-                    visited[r + 1] = 0
-                    visited[r + 2] = 0
-                elif r == 10:
-                    visited[r+1] = 1
-                    bt(r + 1, total + month_3)
-                    visited[r + 1] = 1
-                else:
-                    visited[r] = 1
-                    bt(r + 1, total + month_3)
-                    visited[r] = 0
-            else:
-                bt(r + 1, total)
-
-
+        else:
+            bt(r + 1, total,dm)
 
 T = int(input())
 for tc in range(1,T+1):
@@ -57,10 +33,14 @@ for tc in range(1,T+1):
     plan = list(map(int, input().split()))
 
     visited = [0]*12
+    dm = [0]*12
+    for i in range(12):
+        if plan[i]:
+            dm[i]=min(plan[i] * day , month)
 
     min_total = 1000000000000000
     # 연간 이용권과의 비교는 마지막에
-    bt(0,0)
+    bt(0,0,dm)
 
     if min_total > year:
         min_total = year
