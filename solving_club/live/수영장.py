@@ -1,7 +1,3 @@
-# 수영장
-# 1년 동안 각 달의 이용 계획 수립
-# 가장 적은 비용으로 수영장 이용할 수 있는 방법
-
 '''
 1일 이용권
 1달 이용권 : 매달 1일부터
@@ -38,11 +34,9 @@ for tc in range(1,T+1):
         if plan[i]:
             dm[i]=min(plan[i] * day , month)
 
-    min_total = 1000000000000000
-    # 연간 이용권과의 비교는 마지막에
+    # 연간 이용권을 min 값으로
+    min_total = year
+    
     bt(0,0,dm)
-
-    if min_total > year:
-        min_total = year
 
     print(f'#{tc} {min_total}')

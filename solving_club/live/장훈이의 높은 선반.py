@@ -7,6 +7,7 @@ def bt(r,N,height,B):
             if min_height > height:
                 min_height = height
         return
+
     else:
         bt(r+1, N, height + H[r], B)
         bt(r+1, N, height, B)
