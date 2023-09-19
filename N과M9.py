@@ -1,45 +1,46 @@
-K, N = map(int, input().split())
-lan = [0]* K
-max_lan = 0
-for i in range(K):
-    l = int(input())
-    lan[i] = l
-    if max_lan < l:
-        max_lan = l
+# 나무 자르기
+# 나무 M 미터가 필요함
+# 절단기 높이 H 지정
+# H 보다 큰 나무는 윗 부분 잘릴거야
+# 연속한 나무들 다 잘림
+# 잘린 나무들을 들고 갈거
+import sys
 
-# lan 의 K개의 랜선을 length 길이로 잘라서
-# N개 이상의 랜선을 만들 수 있는지 확인하는 함수
-def cut(lan, length, N):
-    cnt = 0
-    for item in lan:
-        cnt += item//length
-    
-    if cnt >= N:
+# 자를 나무 높이
+# H : 자를 높이
+def cut(li, H, M):
+    result = 0
+
+    for height in li:
+        if height > H:
+            result += height-H
+
+    # 만약 M미터 이상의 나무를 가져갈 수 있다면
+    if result >= M:
         return True
-    else: 
+    else:
         return False
 
-# 최소 길이 
-low = 1
-# 최대 길이
-high = max_lan
-# 길이 0부터 내가 가지고 있는 최대 랜선 길이를 이분탐색
+N, M = map(int, sys.stdin.readline().split())
+tree = list(map(int, sys.stdin.readline().split()))
+# 적어도 M미터의 나무를 집에 가져가기 위한 설정 높이 최대 값
+
+# 높이값을 0 부터 max(tree) 사이에서 찾자
+low = 0
+high = max(tree)
+# 최대값 지정
 can = 0
 while low <= high:
-    mid = (low+high)//2 
-    # mid 값으로 랜선들을 잘랐을 때 
-    # 11개 이상 만들어지면
-    if cut(lan,mid,N):
-        can = mid
-        # 오른쪽으로 가서 길이 더 큰걸로도 되는 지 조사
+    # 자를 높이인 H = mid
+    mid = (low + high)//2
+    # 만약 mid에서 적어도 M미터의 나무를 가져갈 수 있다면
+    if cut(tree, mid, M):
         low = mid + 1
-
-    # mid 값으로 랜선 자랐을 떄
-    # 11개 이상 안만들어지면 
+        can = mid
     else:
-        # 왼쪽으로 가서 길이 줄였을 때 되는지 확인
-        high = mid-1
-        
-    # 위 과정 반복
+        high = mid -1
 
 print(can)
+
+
+
