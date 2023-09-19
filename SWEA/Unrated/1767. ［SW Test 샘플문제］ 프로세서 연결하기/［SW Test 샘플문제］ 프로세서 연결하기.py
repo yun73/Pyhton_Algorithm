@@ -33,22 +33,22 @@ def bt(k, wire, possible):
 
     r, c = core[k]
     for dr, dc in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
-        stack = []
+        cnt = 0
         nr, nc = r + dr, c + dc
         while cell[nr][nc] != -1:
             # 만약 코어나 전선 만나면
             if cell[nr][nc] == 1 or cell[nr][nc] == 2:
                 bt(k + 1, wire, possible)
                 break
-            stack.append((nr, nc))
+            cnt += 1
             nr += dr
             nc += dc
         else:
-            for row, col in stack:
-                cell[row][col] = 2
-            bt(k + 1, wire + len(stack), possible + 1)
-            for row, col in stack:
-                cell[row][col] = 0
+            for n in range(1,cnt):
+                cell[r + dr*n][c + dc*n] = 2
+            bt(k + 1, wire + cnt, possible + 1)
+            for n in range(1,cnt):
+                cell[r + dr*n][c + dc*n] = 0
 
 
 
