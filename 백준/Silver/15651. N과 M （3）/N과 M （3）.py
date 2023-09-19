@@ -10,7 +10,7 @@
 def bt(s, e, li):
     # 종료조건
     if s == e:
-        print(*li)
+        print(li)
         return
 
     # 재귀호출
@@ -18,12 +18,12 @@ def bt(s, e, li):
     for i in range(N):
         # 선택한 거 표시할 필요 없음
         # 그리고 다음거 고르러가자
-        li[s] = i+1
-        bt(s+1,e,li)
-        li[s] = 0
+        bt(s+1,e,li + str(i+1) + ' ')
 
 
 N, M = map(int, input().split())
 used = [False] * N
-li = [0] * M
+# li = [0] * M
+# 스트링으로 하면 더 빨라?
+li = ''
 bt(0,M,li) # 시작, 끝
