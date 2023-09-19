@@ -38,7 +38,6 @@ def bt(k, wire, possible):
         while cell[nr][nc] != -1:
             # 만약 코어나 전선 만나면
             if cell[nr][nc] == 1 or cell[nr][nc] == 2:
-                bt(k + 1, wire, possible)
                 break
             cnt += 1
             nr += dr
@@ -49,7 +48,7 @@ def bt(k, wire, possible):
             bt(k + 1, wire + cnt, possible + 1)
             for n in range(1,cnt):
                 cell[r + dr*n][c + dc*n] = 0
-
+    bt(k + 1, wire, possible)
 
 
 T = int(input())
