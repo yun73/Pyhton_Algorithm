@@ -19,8 +19,10 @@ for i in range(1,N+1):
     # 모두 확인하며 최대값을 갱신해줘야 한다.
     # 따라서 k 는 가장 작은 수인 1부터 현재 구매해야 하는 개수 전 까지를
     # 비용 + 제외한 최대값 과 비교하며 갱신하자
+    result = [0]*(i+1)
     for k in range(1,i+1):
-        dp[i] = max(dp[i], dp[i-k] + P[k])
+        result[k] = dp[i - k] + P[k]
+    dp[i] = max(result)
 
 
 print(dp[N])
