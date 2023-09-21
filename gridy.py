@@ -1,22 +1,60 @@
+# 최단 경로
+import sys
+import heapq
+input = sys.stdin.readline
+def dijkstra(start):
+    global dist
 
+    # 우선순위 큐 생성
+    pq = []
+    # 출발점 초기화
+    dist[K] = 0
+    heapq.heappush(pq, (0,start))
 
-# N : 동물 수, M : 사대 수 ,L : 사정거리
-N, M, L = map(int,input().split())
-location = [0] * (1000000000+1)
-# 사대위치
-gun = list(map(int, input().split()))
-gun.sort()
+    while pq:
+        w, now = heapq.heappop(pq)
 
-# 잡는 개수
-catch = 0
-# 동물 위치
-for i in range(N):
-    x,y = map(int, input())
-    if y > L:
+        # 이미 방문한 지점, 누적가중치가 더 작게 방문한 적 있으면
+        if dist[now] < w:
+            continue
+
+        # 인접 노드들 검색
+        for next in near[now]:
+            w_to_next = next[0]
+            next_node = next[1]
+
+            # 새로운 누적 가중치를 계산하자
+            new_w = dist[now] + w_to_next
+
+            # 만약 다음 노드에 저장된 누적 가중치보다 크거나 같으면 그냥 넘어가
+            if dist[next_node] <= new_w:
+                continue
+            # 만약 더 작은값 오면
+            # 갱신해주고
+            dist[next_node] = new_w
+            # 힙에 넣어줘
+            heapq.heappush(pq, (new_w,next_node))
+
+# 정점 개수 V, 간선 개수 E
+V, E = map(int, input().split())
+# 시작 정점의 번호
+K = int(input())
+# 인접 리스트
+near = [[] for _ in range(V+1)]
+for i in range(E):
+    s, e, w = map(int, input().split())
+    near[s].append((w,e))
+
+INF = int(1e20)
+# 누적 가중치 리스트
+dist = [INF]*(V+1)
+
+dijkstra(K)
+
+for i in range(1,V+1):
+    if dist[i] == INF:
+        print('INF')
         continue
-    # 일단 입력 받으면서 사정거리 밖에 있는 얘들은 받지마
 
+    print(dist[i])
 
-
-
-print(catch)
