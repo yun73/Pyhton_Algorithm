@@ -1,31 +1,22 @@
-# 입국심사
-# 맨 처음에 심사대 모두 비어있어
-# 비행기 하나 전세냄
-# 상근이와 친구들만 기다림
-# 한심사대에 한사람만
-# 가장 앞에 서있는 사람 비어있는 심사대로
-# 심사 시간 최소만들기
-# M : 상근이와 친구들
-# N : 입국심사대 개수
-# k번 심사대에 앚아있는 심사관이 심사하는데 드는시간 Tk
-import sys
 
-N, M = map(int, sys.stdin.readline().split())
-T = [0] * N
-is_clear = [0] * (10**9+1)
+
+# N : 동물 수, M : 사대 수 ,L : 사정거리
+N, M, L = map(int,input().split())
+location = [0] * (1000000000+1)
+# 사대위치
+gun = list(map(int, input().split()))
+gun.sort()
+
+# 잡는 개수
+catch = 0
+# 동물 위치
 for i in range(N):
+    x,y = map(int, input())
+    if y > L:
+        continue
+    # 일단 입력 받으면서 사정거리 밖에 있는 얘들은 받지마
 
-    a = int(sys.stdin.readline().rstrip())
-    T[i] = a
-    is_clear[a] += 1
 
-    if is_clear[a]:
-        j = 2
-        while i * j <= 10**8*2:
-            is_clear[i * j] += 1
-            j += 1
 
-# 입국 심사 완료될 때 한명 씩 완료했다고 하자
-# 예를 들어 8초일때 2초 걸리는 경우 8걸리는 경우에 대해서
-# 10초일 때 한명 감소, 16초일 때 한명 감소 이런식
-# 그러면 0부터 무한대 초까지 걸릴때 완료되는 시점에 인원수를 감소 시켜주고
+
+print(catch)
