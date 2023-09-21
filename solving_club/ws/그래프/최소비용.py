@@ -17,7 +17,6 @@ def dijkstra():
     acc_use[0][0] = 0
 
 
-
     while pq:
         # 현재 시점 가장 누적거리 짧은 노드 정보
         nowuse, r, c = heapq.heappop(pq)
