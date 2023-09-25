@@ -1,72 +1,124 @@
 '''
-공항
+특정한 최단 경로
 
-- 게이트 : G 개 - 1~G
-- 비행기 : P 개 순서대로
-- i 번째 비행기를 1번 부터 Gi 번째의이트 중 하나에 영구적으로 도킹
-    - 3번 비행기 이면 1번부터 3번 게이트 중에 도킹 가능
-- 비행기가 어느 게이트에도 도킹 못하면 공항 폐쇄, 이후 어떤 비행기도 도착 못함
-    - 최대한 도킹 할 수 있게
-- 최대 몇 대 도킹시킬 수 있음??
+- 무방향 그래프
+- 상황
+    - 세준이는 1번 정점  N번 정점으로 최단거리 이동 => 그래프 + 최단거리 = 다익스트라
 
-1. 일단 도킹 했는지 안했는지 체크해줘야 함
-2. 1번 비행기 이면 1번부터 i 번 까지의 모든 비행기의 경우가 1줄어든거임
-3. 그다음 2번 비행기 오면 1번부터 2번 중에 1의 경우 없어졌으니 2번만 가능
-4. 만약 큰 숫자부터 오면
-5. 4 번 비행기 오면 1번부터 4번중에 4번이고 4번부터 i번 까지의 비행기의 가능성 1 감소
-6. 그 다음 비행기가 3번 오면
-근데 이러면 n! ? 되서 시간초과 날듯
+- 조건
+    - 임의로 주어진 두 정점은 반드시 통과해야 한다.
+    - 한 번 이동했던 정점, 한번 이동했던 간선도 다시 이동할 수 있음
+    - 하지만 반드시 최단경로로
 
-이걸 서로소집합으로 구현하게 되면
-1. 초기에 각 게이트들의 리더 즉 가능한 경우는 자기자신만큼이다
-2. 만약 2가 들어오면 자기자신 자리에 가능하니까 간능한 수를 1줄이고
-줄인 수가 다음에 2가 들어왔을 때 1, 2 게이트중 1만 가능하다는 소리다
-3. 근데 만약 그 전에 1도 들어와있었다면 루트값은 0이 되며 더이상 도킹을 하지 못하게 된다.
+- 주어진 두 정점을 반드시 거치면서 최단경로로 이동할 때 최단 경로의 길이를 구해라
 
+- 1번에서 v1,v2 / v1 에서  v2 /v1,v2에서 N번까지 중에 최소값들끼리 더하면??
+
+2 ≤ N ≤ 800, 0 ≤ E ≤ 200,000
 '''
 import sys
+import heapq
 input = sys.stdin.readline
 
-def find(x):
-    if x == park_possible[x]:
-        return x
-    park_possible[x] = find(park_possible[x])
-    return park_possible[x]
+def dijk(s,e):
+    INF = int(1e10)
+    distance = [INF] * (N + 1)
 
-def union(x,y):
-    # a: 들어온값,b: 연결되는 값
-    a = find(x)
-    b = find(y)
-    # 내가 지금 도킹시키고자 하는 범위 보다 한단계 작은 범위의 루트 가능성 값을 따름
-    park_possible[a] = b
+    # 우선순위 큐 생성
+    pq = []
 
+    # 초기화
+    distance[s] = 0
+    # 출발점 넣기
+    heapq.heappush(pq, (0,s))
 
-G = int(input())
-P = int(input())
+    while pq:
+        acc_dis, now = heapq.heappop(pq)
 
-# 각 비행기 게이트의 가능성
-park_possible = [i for i in range(G+1)]
-# print(park_possible)
-# 가능한 최대 비행기 수
-cnt = 0
-# P 개의 비행기 순서대로 오고
-for i in range(1, P+1):
-    g = int(input())
-    # 더이상 도킹시킬 수 없으면 = 루트 값이 0 이면
-    a = find(g)
-    if find(g) == 0:
-        break
+        # 만약 가져온 누적 거리가 현재 저장된 누적거리보다 크면 pass
+        if distance[now] < acc_dis:
+            continue
 
-    cnt += 1
-    # 자기보다 한개 작은범위에 따라 내가 도킹시킬 수 있는게 달라짐
-    b = a - 1
-    # 둘을 같은 그룹으로 묶자
-    union(a,b)
-    # print(park_possible)
+        # 인접노드들을 순회하며
+        for next in range(1,N+1):
+            # 갈 수 없으면 지나쳐
+            if not graph[now][next]:
+                continue
+            # 갈수 있으면
+            # 새로운 누적값 계산
+            new_acc = acc_dis + graph[now][next]
+            # 만약 새로운 누적값이 이미 존재하는 거보다 크면 지나쳐
+            if distance[next] < new_acc:
+                continue
+            # 아니면 갱신해주고 우선순위에 넣어줘
+            distance[next] = new_acc
+            heapq.heappush(pq, (new_acc, next))
 
-print(cnt)
+    return distance
 
 
+# N : 정점 개수, E : 간선개수
+N, E = map(int, input().split())
 
+graph = [[0]*(N+1) for _ in range(N+1)]
 
+# 간선 E 개의정보
+for _ in range(E):
+    # s 번정점에서 e 번 정점까지 d 거리만큼 양방향 길
+    s, e, d = map(int, input().split())
+    graph[s][e] = d
+    graph[e][s] = d
 
+INF = int(1e10)
+# 반드시 거쳐야 할 두 정점
+v1, v2 = map(int, input().split())
+
+result = 0
+# 만약 전체 돌았는데 안나오면 -1 출력
+one_to_N = dijk(1,N)
+if one_to_N[v1] == INF or one_to_N[v2] == INF or one_to_N[N] == INF:
+    result = -1
+else:
+    # v1 > v2 = v2 > v1
+    v1_v2 = dijk(v1, v2)
+    result += v1_v2[v2]
+
+    # 두가지 경우
+
+    # 1 > v2 > v1 > N
+    res1 = 0
+    # 1번에서 v1
+    one_to_v1 = dijk(1,v1)
+    res1 += one_to_v1[v1]
+    # v2에서 N
+    v2_to_N = dijk(v2,N)
+    res1 += v2_to_N[N]
+
+    # 1 > v2 > v1 > N
+    res2 = 0
+
+    # 1번에서 v2
+    one_to_v2 = dijk(1, v2)
+    res2 += one_to_v2[v2]
+    # v1에서 N
+    v1_to_N = dijk(v1, N)
+    res2 += v1_to_N[N]
+
+    result += min(res1,res2)
+
+print(result)
+
+# print(dijk(v1,v2))
+# print(dijk(1,N))
+# print(dijk(1,v1))
+# print(dijk(1,v2))
+# print(dijk(N,v1))
+# print(dijk(N,v2))
+'''
+[10000000000, 3, 0, 3, 5]
+[10000000000, 0, 3, 5, 4]
+[10000000000, 0, 3, 5, 4]
+[10000000000, 0, 3, 5, 4]
+[10000000000, 4, 4, 1, 0]
+[10000000000, 4, 5, 1, 0]
+'''
