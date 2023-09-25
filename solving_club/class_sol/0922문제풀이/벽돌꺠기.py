@@ -53,20 +53,19 @@ def bt(n,N,now):
 
     # 종료 조건
     if n == N:
+        if max_count[n] < -now[0]:
+            max_count[n] = -now[0]
         return
 
     # 누적 값
-    acc_count = -(now[0])
-    # 새로운 배열
-    new_block = deepcopy(now[1])
-    # 들어온 값이 작으면 리턴
-    if max_count[n] > acc_count:
-        return
+    acc_count = -now[0]
 
     pq = []
     # 1. 구슬 떨어트릴 위치 정하기
     # 터뜨릴 때 정하고 해당 위치 높이정보 및 블럭 정보도 갱신
     for c in range(W):
+        # 새로운 배열
+        new_block = deepcopy(now[1])
         # 깨트릴 데 있을 때 까지 가봐
         r = 0
         while r < H:
@@ -82,31 +81,30 @@ def bt(n,N,now):
         while pang:
             y, x, brk = pang.pop(0)
             count += 1
-            for dr, dc in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
-                # 해당 위치의 값 만큼
-                for i in range(brk):
-                    ny, nx = y + i * dr, x + i * dc
-                    if 0 <= ny < H and 0 <= nx < W and new_block[ny][nx]:
-                        pang.append((ny, nx, new_block[ny][nx]))
-                        new_block[ny][nx] = 0
-                        count += 1
+            for i in range(brk):
+                if i >= 1:
+                    for dr, dc in [[1, 0], [-1, 0], [0, 1], [0, -1]]:
+                    # 해당 위치의 값 만큼
+                        ny, nx = y + i * dr, x + i * dc
+                        if 0 <= ny < H and 0 <= nx < W and new_block[ny][nx]:
+                            pang.append((ny, nx, new_block[ny][nx]))
+                            new_block[ny][nx] = 0
+                            count += 1
         # 새로운 누적값
         new_acc = acc_count + count
-        # 누적거리가 기존보다 작으면 버려
-        if max_count[n+1] >= new_acc:
-            continue
+        # # 누적거리가 기존보다 작으면 버려
+        # if max_count[n+1] > new_acc:
+        #     continue
         # 다 탐색했으면 다음 탐색에 넘겨줄 새로운 배열을 만들어 넘겨줘
         next_block = create_block(new_block)
-        max_count[n+1] = new_acc
         # 우선순위 큐에 깰 수 있는 누적 블럭 값이랑 배열을 넣어줘
-        heapq.heappush(pq, (-new_acc,next_block))
+        heapq.heappush(pq, [-new_acc,next_block])
 
 
     # 우선순위에 따라 백트래킹 들어가자
     while pq:
         bt(n+1,N, heapq.heappop(pq))
-        # 초기화 과정 필요 없음
-        # 새로 만든 배열을 가지고 감
+
 
 
 T = int(input())
@@ -125,10 +123,8 @@ for tc in range(1,T+1):
                 continue
             cnt += 1
 
-    INF = W*H*10 + 1
-    max_count = [INF]*5
-    max_count[0] = 0
-    bt(0, N, (0,block))
+    max_count = [0]*5
+    bt(0, N, [0,block])
 
     print(f'#{tc} {cnt - max_count[4]}')
 
