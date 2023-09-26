@@ -39,7 +39,8 @@ for i in range(len(a)-1,-1,-M):
 
 for i in range(len(b)-1,-1,-M):
     res.append(b[i]*2)
-
+# print(a[::-M])
+# 리스트 슬라이싱 방법을 사용해서도 구현 가능
 res.sort()
 
 print(sum(res[:-1])+res[-1]//2)
