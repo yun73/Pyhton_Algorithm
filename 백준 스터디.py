@@ -1,32 +1,43 @@
-# 동전
 '''
-문제 접근 방법
-- 동전이 오름 차순으로 정렬되어 주어지기 때문에 작은 동전을 이용하여
-m원을 만들 수 있는 경우의 수를 더하자, 다음 동전으로 넘어가서
-이전경우의 수에 해당 동전으로 만들 수 있는 경우의 수를 순차적으로 더해ㅏ며 답을 구한다.
-ai : 금액 i를 만드는 방법의 수
-k : 각 화폐의 단위
-점화식 : 각 화폐의 단위인 k를 돌면서 금액 1 ~ M 을 만들 수 있는지 확인한다
+코딩은 예쁘게
+
+- 인덴트 : 각 줄의 탭 키 이용해 들여쓰기
+
+- 연속된 줄을 그룹으로 선택하고, 각 줄의 앞에 탭 추가 및 삭제 가능
+
+- 줄의 개수 : N, 각 줄의 앞에 있는 탭의 개수, 올바른 탭의 개수
+
+- 편집 : 아래 두 명령을 모두 수행하는 것이 하나의 편집
+    - 연속된 줄을 그룹으로 선택
+    - 선택된 줄의 앞에 탭 1개를 추가하거나 삭제
+
+-
 '''
+# 줄의 개수
+N = int(input())
+# tab[0] : 현재 탭의 개수, tab[1] : 올바른 탭의 개수
+tab = [list(map(int, input().split())) for _ in range(2)]
+arr = [0] * N
+# 모든 줄을 순회하며 올바른 탭과 현재 탭과의 차이 구해줌
+for i in range(N):
+    arr[i] = tab[1][i] - tab[0][i]
+print(arr)
 
-T = int(input())
-for tc in range(1,T+1):
-    # 동전의 가지수
-    N = int(input())
-    # N가지 동전 오름차순으로 주어짐
-    coins = list(map(int, input().split()))
-    # 만들어야할 금액
-    M = int(input())
+result = 0
+# 탭의 차이를 돌며
+# 이전 편집 개수 기억
+before = arr[0]
+result += abs(before)
+for i in range(1,N):
+    # 현재보는값 0 기준으로
+    now = arr[i]
+    # 이전 값보다 차이 적거나 같은 거 나오면 이전거에서 해줬으니까 건너뛰기
+    if now <= before:
+        before = now
+        continue
+    # 큰 거 나오면 그 차이만큼 해주기
+    else:
+        result += now - before
+        before = now
 
-    # memoization을 위한 리스트 선언
-    dp = [0] * (M+1)
-    dp[0] = 1
-
-    for coin in coins:
-        for i in range(M+1):
-            # a_(i-k) 를 만드는 방법이 존재한다면
-            # 이전 경우의 수에 현재 동전으로 만들 수 있는 경우의 수를 더한다.
-            if i >= coin:
-                dp[i] += dp[i-coin]
-
-    print(dp)
+print(result)
