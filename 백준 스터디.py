@@ -1,76 +1,137 @@
 '''
-코딩은 예쁘게
+미로 탈출 명령어
 
-- 인덴트 : 각 줄의 탭 키 이용해 들여쓰기
+- (x,y) -> (r,c)
+- 미로 : n x m
+    - '.' : 빈공간
+    - 'S' : 출발지점
+    - 'E' : 탈출지점
+- 탈출 조건
+    1. 격자 바깥으로 못나감
+    2. (x, y)에서 (r, c)까지 이동거리가 총 k여야 함
+        - 이때, (x, y)와 (r, c)격자를 포함해, 같은 격자를 두 번 이상 방문해도 됨
+    3. 미로에서 탈출한 경로를 문자열로 나타냈을 때, 문자열이 사전 순으로 가장 빠른 경로로 탈출
+        - 정렬 한 번 써서 맨 앞에거로 탈출 하자
 
-- 연속된 줄을 그룹으로 선택하고, 각 줄의 앞에 탭 추가 및 삭제 가능
+- 이동경로 문자열
+    - l : 왼쪽
+    - r : 오른쪽
+    - u : 위
+    - d : 아래
 
-- 줄의 개수 : N, 각 줄의 앞에 있는 탭의 개수, 올바른 탭의 개수
+- 출력
+    - 탈출하기 위한 경로 return
+    - 조건대로 미로 못 탈출하면 'impossible' return
 
-- 편집 : 아래 두 명령을 모두 수행하는 것이 하나의 편집
-    - 연속된 줄을 그룹으로 선택
-    - 선택된 줄의 앞에 탭 1개를 추가하거나 삭제
+- 우선 순위 큐로 이동경로를 자체를 넣기
+- 알아서 사전순 먼저 탐색한다
 
-- 풀이
-    - 일단 각 줄마다 수행해야 하는 편집의 수를 조사
-    - 만약 이전거 보다 편집해야 하는 횟수가 작거나 같으면 이전 편집에서 처리해줌
-    - 이전거 보다 크면 이전거와의 차이만큼 더 편집해줘야 함
-    - 근데 방향 즉 - 편집인지 + 편집인지도 알아야 함
-    - + 랑 - 는 동시에 연산 못함
+- 최소로 갈 수 있는 만큼 가고 그 이후에는 남은 k 만큼 반복하여 더하기
 '''
-# 줄의 개수
-N = int(input())
-# tab[0] : 현재 탭의 개수, tab[1] : 올바른 탭의 개수
-tab = [list(map(int, input().split())) for _ in range(2)]
-edit = [0] * N
-# 모든 줄을 순회하며 올바른 탭과 현재 탭과의 차이 구해줌
-for i in range(N):
-    edit[i] = tab[1][i] - tab[0][i]
+import heapq
+# 상하좌우
+di = [(1,0),(0,-1),(0,1),(-1,0)]
+ds = ['d','l','r','u']
+def solution(n, m, x, y, r, c, k):
+    # 우선순위 큐 생성
+    pq = []
+    # 시작 위치 넣어주기
+    # 갔던 곳 다시 방문해도 되니까 따로 누적값 기록 안함
+    heapq.heappush(pq,('',x,y))
+    while pq:
+        # 현재 경로 및 위치 반환
+        now,i,j = heapq.heappop(pq)
+        # 이동해야 하는 거리가 남은 거리보다 크거나 같지 않으면 패스
+        if abs(i-r) + abs(j-c) > k-len(now):
+            continue
+        # 현재 위치에서 도착점까지의 남을 거리가 홀수 이면 그냥 패스
+        if (k-len(now)-(abs(i-r) + abs(j-c)))%2:
+            continue
 
-# 전체 결과
-result = 0
-# 부분 결과
-res = 0
-# 탭의 차이를 돌며
-# 이전 편집 개수 기억
-before = edit[0]
-res = abs(before)
-i = 1
-while i<=N-1: # 모든 편집 다 할 때 까지
-    now = edit[i]
-    # 만약 마지막 인덱스이거나 부호가 바뀌면 즉 편집 방향이 바뀌면
-    if before*now < 0:
-        # 지금까지 구한 편집 횟수 결과에 더해주기
-        result += res
-        # 부분결과 초기화 하고
-        res = abs(now)
-        # 이전거 갱신하고
-        before = now
-        # 근데 만약 마지막이면
-        if i == N-1:
-            result += res
-        # 다음걸로 가자
-        i += 1
+        # 만약 k번 만큼 이동했는데
+        if len(now) == k:
+            return now
 
-        continue
+        # 현재 위치에서 이동할 수 있는 곳 탐색
+        for d in range(4):
+            ni,nj = i + di[d][0], j + di[d][1]
+            # 만약 범위를 안넘어 가면
+            if 1<= ni <= n and 1<= nj <= m:
+                # 이동경로를 추가해주고
+                next = now + ds[d]
+                if len(next) == k:
+                    if (ni,nj) != (r,c):
+                        continue
+                # 다음 탐색 지점에 추가
+                heapq.heappush(pq, (next,ni,nj))
 
-    # 아니라면 이전 결과와의 차이만큼 부분 결과에 더해줘
-    # - 는 더 작은거 들어오면 편집횟수 늘어나고
-    # + 는 더 큰거
-    # 절대값이면 숫자 더 큰 거
-    if abs(now) > abs(before):
-        res += (abs(now) - abs(before))
-        before = now
+    return 'impossible'
+
+
+
+n, m, x, y, r, c, k = map(int, input().split())
+print(solution(n, m, x, y, r, c, k))
+
+
+
+'''
+n * m 격자 미로가 주어진다.
+x, y 에서 출발해 r, c로 이동해서 탈출해야한다.
+
+조건
+1. 격자 밖으로는 나갈 수 없다.
+2. 이동하는 거리가 총 k여야 한다. 같은 격자를 2번 이상 방문해도 된다. -> visited를 안쓰고 ?
+문자열이 사전 순으로 가장 빠른 경로로 탈출해야 한다.
+
+l, r, u, d = 좌, 우, 상, 하
+
+bfs -> 목적지에 횟수만큼 도달한 경우 문자열로 출력
+
+- 문자열도 min, max 별로 비교할 수 있다.
+'''
+
+from collections import deque
+import sys
+input = sys.stdin.readline
+
+dr = [1, 0, 0, -1]
+dc = [0, -1, 1, 0]
+str_list = ['d', 'l', 'r', 'u']
+answer = ''
+
+def bfs(srow, scol, erow, ecol, k, n, m):
+    global answer
+    queue = []
+    queue.append((srow, scol, '', 0))
+
+    while queue:
+        row, col, move_str, cnt = queue.pop(0)
+
+        if (row, col) == (erow, ecol) and (k - cnt) % 2 == 1:
+            break
+
+        if (row, col) == (erow, ecol) and cnt == k:
+            answer = move_str
+            break
+
+        for d in range(len(dr)):
+            nrow, ncol = row + dr[d], col + dc[d]
+            if 0 <= nrow < n and 0 <= ncol < m:
+                if abs(nrow - erow) + abs(ncol - ecol) + cnt + 1 > k:
+                    continue
+                queue.append((nrow, ncol, move_str + str_list[d], cnt + 1))
+
+        queue.sort(key=lambda x: x[2])
+
+
+def solution(n, m, x, y, r, c, k):
+    global answer
+    answer = ''
+
+    bfs(x - 1, y - 1, r - 1, c - 1, k, n, m)
+    if answer == '':
+        return 'impossible'
     else:
-        before = now
+        return answer
 
-
-    if i == N - 1:
-        result += res
-
-    i += 1
-
-if N == 1:
-    print(abs(edit[0]))
-else:
-    print(result)
+print(solution(3, 4, 2, 3, 3, 1, 5))

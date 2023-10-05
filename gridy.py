@@ -1,110 +1,78 @@
 '''
-로봇
+미로 탈출 명령어
 
-- 이동 : 바라보는 방향 궤도를 따라(동, 서, 남, 북)
-- 로봇 이동 제어 명령
-    1. GO k: k는 1,2,3 중 하나, 현재 향한 방향으로 k칸 만큼 움직여라
-    2. Turn dir: dir은 left or right, 각각 왼쪽 오른쪽으로 90도 회전
+- (x,y) -> (r,c)
+- 미로 : n x m
+    - '.' : 빈공간
+    - 'S' : 출발지점
+    - 'E' : 탈출지점
+- 탈출 조건
+    1. 격자 바깥으로 못나감
+    2. (x, y)에서 (r, c)까지 이동거리가 총 k여야 함
+        - 이때, (x, y)와 (r, c)격자를 포함해, 같은 격자를 두 번 이상 방문해도 됨
+    3. 미로에서 탈출한 경로를 문자열로 나타냈을 때, 문자열이 사전 순으로 가장 빠른 경로로 탈출
+        - 정렬 한 번 써서 맨 앞에거로 탈출 하자
 
-- 궤도
-    - 0 : 궤도가 있어 로봇이 갈 수 있는 지점
-    - 1 : 궤도가 없어 로봇이 갈 수 없는 지점
+- 이동경로 문자열
+    - l : 왼쪽
+    - r : 오른쪽
+    - u : 위
+    - d : 아래
 
-- 입력
-    - 세로길이 : M, 가로길이 : N / 둘 다 100 이하
-    - 궤도 서치상태 M줄
-    - 출발위치, 바라보는 방향
-    - 도착위치 바라보는 방향
-- 방향
-    - 동쪽 1, 서쪽 2, 남쪽 3, 북쪽 4
-    - 0 1 2 3
-    - di = [(0,1),(0,-1),(1,0),(-1,0)]
-    - di_dict = {0:1, 1:0 3 :4 , 4 :3}
+- 출력
+    - 탈출하기 위한 경로 return
+    - 조건대로 미로 못 탈출하면 'impossible' return
 
-- 구해야 할 것
-    - 최단 명령
-        - 길이가 짧은지 x
-        - 명령 개수가 적어야 함
+- 우선 순위 큐로 이동경로를 자체를 넣기
+- 알아서 사전순 먼저 탐색한다
 
-    - 각 궤도에서 다른 방향으로 가기 위한 명령횟수를 구하고
-    - 명령수 가 적은 순으로 우선순위 큐에 넣자
+- 최소로 갈 수 있는 만큼 가고 그 이후에는 남은 k 만큼 반복하여 더하기
 '''
 import heapq
-di = [(0,1),(0,-1),(1,0),(-1,0)]
-di_dict = {0:1, 1:0 , 2 :3 , 3 :2}
+# 상하좌우
+di = [(1,0),(0,-1),(0,1),(-1,0)]
+ds = ['d','l','r','u']
+def solution(n, m, x, y, r, c, k):
+    # 가장 짧게 도착할 수 있는 경우 중에서 우선순위 젤 높은 값을 얻어내자
+    new_k = abs(x-r) + abs(y-c)
+    # 마지막에 더해줘야할 이동횟수
+    k = k - new_k
+    if k%2:
+        return "impossible"
 
-def dijk(sr,sc,go,er,ec,eg):
+    result = ''
+    # 우선순위 큐 생성
+    prq = []
     # 우선순위 큐 생성
     pq = []
-    INF = int(1e9)
-    # 누적 명령 횟수
-    command = [[[INF,0] for _ in range(N)] for _ in range(M)]
-    # 시작 지점 초기화
-    command[sr][sc][0] = 0
-    command[sr][sc][1] = go
-    if (sr,sc) == (er,ec):
-        if go == eg:
-            return 0
-        elif go == di_dict[eg]:
-            return 2
-        else:
-            return 1
-    heapq.heappush(pq,(0,sr,sc))
+    # 시작 위치 넣어주기
+    # 갔던 곳 다시 방문해도 되니까 따로 누적값 기록 안함
+    heapq.heappush(pq,('',x,y))
     while pq:
-        # 우선순위 가장 높은(누적 명령어 가장 낮은) 위치 가져오기
-        acc_cmd, r, c = heapq.heappop(pq)
-        # 만약 이미 방문했거나 더 큰 누적치가 들어오면
-        if command[r][c][0] < acc_cmd:
-            continue
+        # 현재 경로 및 위치 반환
+        now, i,j = heapq.heappop(pq)
 
-        # 현재 위치에서 갈 수 있는 방향 탐색
-        for i in range(4):
-            for k in range(1,4):
-                nr,nc = r + k*di[i][0], c + k*di[i][1]
-                # 범위 내이고 궤도가 존재하는 0 이면
-                if 0<=nr<M and 0<=nc<N and not arr[nr][nc]:
-                    # 누적 명령 계산
-                    # 이전 방향과 같은 곳이면
-                    new_acc_cmd = acc_cmd+1
-                    # 현재 바라보는 방향과 갈 곳의 방향 에 의해 명령 개수 추가
-                    if i == command[r][c][1]:
-                        new_acc_cmd += 0
-                    # 현재 보는 방향과 반대방향일 때
-                    elif command[r][c][1] == di_dict[i]:
-                        new_acc_cmd += 2
-                    else:
-                        new_acc_cmd += 1
+        # 만약 k번 만큼 이동했는데
+        if len(now) == new_k:
+            result = now
+            heapq.heappush(prq,(now,i,j))
+            break
 
-                    # 만약 종료 값을 찾으면
-                    if (nr,nc) == (er,ec):
-                        # 현재 바라보는 방향과 갈 곳의 방향 에 의해 명령 개수 추가
-                        if eg == i:
-                            new_acc_cmd += 0
-                        # 현재 보는 방향과 반대방향일 때
-                        elif eg == di_dict[i]:
-                            new_acc_cmd += 2
-                        else:
-                            new_acc_cmd += 1
-
-                    # 새로운 갱신 값이 기존 누적값보다 크면 넣지 말자
-                    if command[nr][nc][0] <= new_acc_cmd:
+        # 현재 위치에서 이동할 수 있는 곳 탐색
+        for d in range(4):
+            ni,nj = i + di[d][0], j + di[d][1]
+            # 만약 범위를 안넘어 가면
+            if 1<= ni <= n and 1<= nj <= m:
+                # 이동경로를 추가해주고
+                next = now + ds[d]
+                if len(next) > new_k:
+                    continue
+                if len(next) == new_k:
+                    if (ni,nj) != (r,c):
                         continue
-                    # 새로운 최단 명령누적값 저장
-                    command[nr][nc][0] = new_acc_cmd
-                    # 보고 있는 방향 저장
-                    command[nr][nc][1] = i
-                    heapq.heappush(pq,(new_acc_cmd,nr,nc))
-
-                # 범위 밖이거나 중간에 궤도 없는 곳 나오면 해당 방향의 그 이후로는 보지 말자
-                else:
-                    break # for k
-
-    return command[er][ec][0]
-
-M, N = map(int, input().split())
-arr = [list(map(int, input().split())) for _ in range(M)]
-sr,sc,sg = map(int, input().split())
-er,ec,eg = map(int, input().split())
-print(dijk(sr-1,sc-1,sg-1,er-1,ec-1,eg-1))
+                # 다음 탐색 지점에 추가
+                heapq.heappush(pq, (next,ni,nj))
 
 
+n, m, x, y, r, c, k = map(int, input().split())
+print(solution(n, m, x, y, r, c, k))

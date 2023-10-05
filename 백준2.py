@@ -25,35 +25,64 @@
 - 그러면 내가 지금 보는 인덱스와 찾아야할 문자의 인덱스들을 알아야 한다.
 - 문자가 모두 소문자 이므로 아스키 코드로
 '''
+import sys
+sys.setrecursionlimit(10**7)
+
+def bt(i,goal, cursor, total):
+    global min_total
+    global word
+
+    #  종료조건
+    if i == goal:
+        if min_total > total:
+            min_total = total
+        return
+
+    alpha = word[chr(i)]
+    if not alpha:
+        bt(i + 1, goal, cursor, total)
+        return
+
+    # 가지치기
+    if min_total < total:
+        min_total = total
+        return
+
+    # 수가 하나만 있을 때
+    if len(alpha) == 1:
+        bt(i+1,goal, alpha[0], total + abs(cursor - alpha[0]))
+    # 모든 수가 커서 왼쪽이나 오른쪽에만 있을때
+    elif alpha[0] <= cursor and alpha[-1] <= cursor:
+        bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]))
+    elif alpha[0] >= cursor and alpha[-1] >= cursor:
+        bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]))
+    else:  # 좌우로 존재하면
+        # 커서로부터 가장 멀리있는 얘부터 갔다가 쭉
+        if abs(cursor - alpha[0]) <= abs(cursor - alpha[-1]):
+            bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
+            bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
+        else:
+            bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
+            bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
+
+    return
+
 word = {}
 # 소문자 a~z
+dp = {}
 for i in range(97,123):
     word[chr(i)] = []
-print(word)
 
 S = list(input())
 for i in range(len(S)):
     # 해당하는 알파벳의 인덱스를 추가
     word[S[i]].append(i)
-print(word)
+
+# dp[a] 현재 a 까지 오는데 최소 클릭수
 # 현재 커서 위치
 cursor = 0
 # 전체 클릭 횟수
-total = len(S)
-for i in range(97,123):
-    is_clear = [0] * len(word[chr(i)])
-    # 해당하는 문자를 다 출력할 때 까지 조작
-    while 0 not in is_clear:
-        # 현재 커서 위치와 가까운 걸 먼저
-        min_sub = int(1e9)
-        q = 0
-        for j in range(len(word[chr(i)])):
-            if is_clear[j]:
-                continue
-            if min_sub > abs(cursor - word[chr(i)][j]):
-                min_sub = abs(cursor - word[chr(i)][j])
-                q = word[chr(i)][j]
+min_total = int(1e9)
+bt(97,123, cursor, len(S))
 
-        total += (cursor - q)
-        cursor = cursor - (cursor - q)
-
+print(min_total)
