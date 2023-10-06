@@ -26,7 +26,7 @@
 - 문자가 모두 소문자 이므로 아스키 코드로
 '''
 import sys
-sys.setrecursionlimit(10**7)
+sys.setrecursionlimit(10**9)
 
 def bt(i,goal, cursor, total):
     global min_total
@@ -43,11 +43,6 @@ def bt(i,goal, cursor, total):
         bt(i + 1, goal, cursor, total)
         return
 
-    # 가지치기
-    if min_total < total:
-        min_total = total
-        return
-
     # 수가 하나만 있을 때
     if len(alpha) == 1:
         bt(i+1,goal, alpha[0], total + abs(cursor - alpha[0]))
@@ -56,16 +51,15 @@ def bt(i,goal, cursor, total):
         bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]))
     elif alpha[0] >= cursor and alpha[-1] >= cursor:
         bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]))
-    else:  # 좌우로 존재하면
-        # 커서로부터 가장 멀리있는 얘부터 갔다가 쭉
-        if abs(cursor - alpha[0]) <= abs(cursor - alpha[-1]):
-            bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
-            bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
-        else:
-            bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
-            bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
+    # 좌우로 존재하면
+    # 커서로부터 가장 멀리있는 얘부터 갔다가 쭉
+    elif abs(cursor - alpha[0]) <= abs(cursor - alpha[-1]):
+        bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
+        bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
+    elif abs(cursor - alpha[0]) > abs(cursor - alpha[-1]):
+        bt(i + 1, goal, alpha[0], total + abs(cursor - alpha[0]) + abs(cursor - alpha[-1]) * 2)
+        bt(i + 1, goal, alpha[-1], total + abs(cursor - alpha[-1]) + abs(cursor - alpha[0]) * 2)
 
-    return
 
 word = {}
 # 소문자 a~z
