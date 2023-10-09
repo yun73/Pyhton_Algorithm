@@ -1,78 +1,28 @@
 '''
-미로 탈출 명령어
+행복유치원
 
-- (x,y) -> (r,c)
-- 미로 : n x m
-    - '.' : 빈공간
-    - 'S' : 출발지점
-    - 'E' : 탈출지점
-- 탈출 조건
-    1. 격자 바깥으로 못나감
-    2. (x, y)에서 (r, c)까지 이동거리가 총 k여야 함
-        - 이때, (x, y)와 (r, c)격자를 포함해, 같은 격자를 두 번 이상 방문해도 됨
-    3. 미로에서 탈출한 경로를 문자열로 나타냈을 때, 문자열이 사전 순으로 가장 빠른 경로로 탈출
-        - 정렬 한 번 써서 맨 앞에거로 탈출 하자
+- 유치원생 : N 명 (키 순서대로 일렬)
+- 조 : K 개
+    - 각 조에 원생 적어도 한명, 속한 원생들은 서로 인접
 
-- 이동경로 문자열
-    - l : 왼쪽
-    - r : 오른쪽
-    - u : 위
-    - d : 아래
+- 단체 티셔츠 비용 : 각 조마다 (가장 키 큰 원생 - 키 작은 원생)
 
-- 출력
-    - 탈출하기 위한 경로 return
-    - 조건대로 미로 못 탈출하면 'impossible' return
+- 비용의 합을 최소로 하자
 
-- 우선 순위 큐로 이동경로를 자체를 넣기
-- 알아서 사전순 먼저 탐색한다
-
-- 최소로 갈 수 있는 만큼 가고 그 이후에는 남은 k 만큼 반복하여 더하기
+1. 키 순서대로 서 있으므로 각 조로 끊게 되면 조의 맨앞, 맨뒤 인덱스의 차이를 구하면 됨
+2. 각 조에 한명씩 있을 때 가장 최소 비용이다
+3. [1,3,5,6,10] 이런식으로 있을 때 3개의 조를 만들기 위해서는 전체 구간을 3개의 구간으로 나누는 것이랑 같다
+왜냐하면 각 조의 원생들의 키는 서로 인접해야 하므로
+4. 구간 나누기 이므로 각 구간 모두 차이를 구하고 거기에서 차이가 많이 나는 구간을 기준점으로 삼으면 된다
+5. 선택해야할 기준점의 개수는 K-1 개이다.
 '''
-import heapq
-# 상하좌우
-di = [(1,0),(0,-1),(0,1),(-1,0)]
-ds = ['d','l','r','u']
-def solution(n, m, x, y, r, c, k):
-    # 가장 짧게 도착할 수 있는 경우 중에서 우선순위 젤 높은 값을 얻어내자
-    new_k = abs(x-r) + abs(y-c)
-    # 마지막에 더해줘야할 이동횟수
-    k = k - new_k
-    if k%2:
-        return "impossible"
 
-    result = ''
-    # 우선순위 큐 생성
-    prq = []
-    # 우선순위 큐 생성
-    pq = []
-    # 시작 위치 넣어주기
-    # 갔던 곳 다시 방문해도 되니까 따로 누적값 기록 안함
-    heapq.heappush(pq,('',x,y))
-    while pq:
-        # 현재 경로 및 위치 반환
-        now, i,j = heapq.heappop(pq)
-
-        # 만약 k번 만큼 이동했는데
-        if len(now) == new_k:
-            result = now
-            heapq.heappush(prq,(now,i,j))
-            break
-
-        # 현재 위치에서 이동할 수 있는 곳 탐색
-        for d in range(4):
-            ni,nj = i + di[d][0], j + di[d][1]
-            # 만약 범위를 안넘어 가면
-            if 1<= ni <= n and 1<= nj <= m:
-                # 이동경로를 추가해주고
-                next = now + ds[d]
-                if len(next) > new_k:
-                    continue
-                if len(next) == new_k:
-                    if (ni,nj) != (r,c):
-                        continue
-                # 다음 탐색 지점에 추가
-                heapq.heappush(pq, (next,ni,nj))
-
-
-n, m, x, y, r, c, k = map(int, input().split())
-print(solution(n, m, x, y, r, c, k))
+N, K = map(int,input().split())
+students = list(map(int, input().split()))
+group = [0]*(N-1)
+for i in range(1,N):
+    group[i-1] = students[i]-students[i-1]
+group.sort()
+# print(group)
+cost = sum(group[:N-1-(K-1)])
+print(cost)
