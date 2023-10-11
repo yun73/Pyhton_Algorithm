@@ -15,10 +15,11 @@
     - 우선순위 높은 즉 문을 가장 적게 부시면서 온 얘
 '''
 
-import heapq
+import sys, heapq
+input = sys.stdin.readline
 
 n = int(input())
-rooms = [list(map(int, input())) for _ in range(n)]
+rooms = [list(map(int, input().rstrip())) for _ in range(n)]
 visited = [[int(1e9)]*n for _ in range(n)]
 pq = []
 # 출발점 우선순위 큐에 넣고 시작
@@ -54,5 +55,6 @@ while pq:
             else:
                 if visited[nr][nc] <= now:
                     continue
+                visited[nr][nc] = now
                 # 지금 까지 부신거 그대로 들고 추가
                 heapq.heappush(pq,(now,nr,nc))
