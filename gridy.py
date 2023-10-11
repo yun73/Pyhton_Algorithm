@@ -10,56 +10,49 @@
 '''
 from collections import deque
 
+def bfs_find_island(r,c,k):
+    global edge
+
+    q = deque()
+    q.append((r, c))
+    arr[r][c] = k
+    visited[r][c] = k
+    while q:
+        i, j = q.popleft()
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            ni, nj = i + dr, j + dc
+            if 0 <= ni < N and 0 <= nj < N and not visited[ni][nj]:
+                if arr[ni][nj] == 1:
+                    # 연결된 섬이면
+                    arr[ni][nj] = k
+                    visited[ni][nj] = k
+                    q.append((ni, nj))
+                # 가장자리를 큐에 넣어주자
+                if arr[ni][nj] == 0:
+                    visited[ni][nj] = k
+                    edge.append((ni,nj,k))
+
+
+
+
 N = int(input())
 arr = [list(map(int, input().split())) for _ in range(N)]
 visited = [[False] * N for _ in range(N)]
+# 가장자리 큐
+edge = deque()
 # 섬 구분 지어 주기
 k = 1
 for r in range(N):
     for c in range(N):
         if visited[r][c] or not arr[r][c]:
             continue
-        q = deque()
-        q.append((r, c))
-        arr[r][c] = k
-        visited[r][c] = True
-        while q:
-            i, j = q.popleft()
-            for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                ni, nj = i + dr, j + dc
-                if 0 <= ni < N and 0 <= nj < N:
-                    if arr[ni][nj] == 1 and not visited[ni][nj]:
-                        # 연결된 섬이면
-                        arr[ni][nj] = k
-                        visited[ni][nj] = True
-                        q.append((ni, nj))
+        bfs_find_island(r, c, k)
         # 섬을 다 탐색했으면
         k += 1
 
 min_dist = int(1e9)
-# 각 섬에서 bfs 돌리며 다른 섬들까지의 거리의 최소 값 구하기
-for i in range(1, k):
-    visit = [[0] * N for _ in range(N)]
-    q = deque()
+# 가장자리 큐 bfs 돌리며 다른 다른 섬들의 bfs 탐색 지역 가장 먼저 만나면 거기가 최소 길이
 
-    for r in range(N):
-        for c in range(N):
-            if arr[r][c] == i:
-                visit[r][c] = 1
-                q.append((r, c))
 
-    while q:
-        x, y = q.popleft()
-        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < N and 0 <= ny < N:
-                # 다른섬 도착
-                if arr[nx][ny] > 0 and arr[nx][ny] != i:
-                    min_dist = min(min_dist,visit[x][y])
-                    break
-                # 바다, 방문 안했던 곳이면
-                if arr[nx][ny] == 0 and not visit[nx][ny]:
-                    visit[nx][ny] = visit[x][y] + 1
-                    q.append((nx,ny))
 
 print(min_dist-1)
