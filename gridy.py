@@ -1,60 +1,58 @@
 '''
-미로만들기
+다리 만들기
 
-- 방 : nxn 바둑판 모양 n**2 개의 방
-    - 검은방 : 못들어감
-    - 흰방 이동 가능
+- 섬 : 1 로 이루어진 육지
+- 0 : 바다
 
-- 시작점 : 0,0 and 도착점 : n-1,n-1
-- 시작점에서 도착점까지 못도착하는 경우 최대한 적게 문을 부시면서 가고 싶다
+- 두 대륙을 연결하는 가장 짧은 다리 하나
 
-1. 가는 방향은  상하좌우
-2. bfs 탐색을 하되 지금까지 부신 검은 벽의 개수를 우선순위로 이용하여 heapq, 우선순위 큐사용
->> 다익스트라
-3. 도착점 도달하면 그 즉시 종료
-    - 우선순위 높은 즉 문을 가장 적게 부시면서 온 얘
+각 섬에서 BFS 탐색하다가 0이 아닌 다른 섬에서 탐색한 곳을 발견하면 그게 최소 다리길이
 '''
+from collections import deque
 
-import sys, heapq
-input = sys.stdin.readline
+def bfs_find_island(r,c,k):
+    global edge
 
-n = int(input())
-rooms = [list(map(int, input().rstrip())) for _ in range(n)]
-visited = [[int(1e9)]*n for _ in range(n)]
-pq = []
-# 출발점 우선순위 큐에 넣고 시작
-heapq.heappush(pq, (0,0,0))
-visited[0][0] = 0
-while pq:
-    # 현재 위치
-    # 가장 맨 앞 인자는 지금까지 부신 개수
-    now , r, c = heapq.heappop(pq)
-    # 도착점이면 지금까지 부신 개수 출력
-    if (r,c) == (n-1,n-1):
-        print(now)
-        break
-    # 지금 위치 이미 와보고 우선 순위 더 큰게 올경우
-    if visited[r][c] < now:
-        continue
+    q = deque()
+    q.append((r, c))
+    arr[r][c] = k
+    visited[r][c] = k
+    while q:
+        i, j = q.popleft()
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            ni, nj = i + dr, j + dc
+            if 0 <= ni < N and 0 <= nj < N and not visited[ni][nj]:
+                if arr[ni][nj] == 1:
+                    # 연결된 섬이면
+                    arr[ni][nj] = k
+                    visited[ni][nj] = k
+                    q.append((ni, nj))
+                # 가장자리를 큐에 넣어주자
+                if arr[ni][nj] == 0:
+                    visited[ni][nj] = k
+                    edge.append((ni,nj,k))
 
-    visited[r][c] = now
 
-    # 현재위치에서 갈 수 있는 곳 탐색
-    for dr,dc in [(0,1),(1,0),(-1,0),(0,-1)]:
-        nr,nc = r+dr, c +dc
-        if 0<=nr<n and 0<=nc<n:
-            # 만약 이미 방문했는데 지금 값보다 작거나 같은거 들어가 있으면 다음 탐색에 넣지마
-            # 벽이면
-            if not rooms[nr][nc]:
-                next = now + 1
-                if visited[nr][nc] <= next:
-                    continue
-                visited[nr][nc] = next
-                heapq.heappush(pq,(next,nr,nc))
-            # 방이면
-            else:
-                if visited[nr][nc] <= now:
-                    continue
-                visited[nr][nc] = now
-                # 지금 까지 부신거 그대로 들고 추가
-                heapq.heappush(pq,(now,nr,nc))
+
+
+N = int(input())
+arr = [list(map(int, input().split())) for _ in range(N)]
+visited = [[False] * N for _ in range(N)]
+# 가장자리 큐
+edge = deque()
+# 섬 구분 지어 주기
+k = 1
+for r in range(N):
+    for c in range(N):
+        if visited[r][c] or not arr[r][c]:
+            continue
+        bfs_find_island(r, c, k)
+        # 섬을 다 탐색했으면
+        k += 1
+
+min_dist = int(1e9)
+# 가장자리 큐 bfs 돌리며 다른 다른 섬들의 bfs 탐색 지역 가장 먼저 만나면 거기가 최소 길이
+
+
+
+print(min_dist-1)
