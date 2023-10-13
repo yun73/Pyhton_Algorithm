@@ -1,127 +1,23 @@
 '''
-백조의 호수
+계단 오르기
 
-1. 백조의 위치를 찾으면 백조위치 저장해두고, 물로 바꾸기
-2. 물과의 경계부분 다음 탐색 리스트에 추가
-3. 하루 지날때 마다
-    -빙하 녹는거
-        - 녹이면서 다음에 녹을 빙하도
-        - 저장된 가장자리 부분들이 전부 녹음
-    - 백조 이어졌는지 확인
-        - 녹은 가장자리에서 bfs 탐색
+- 계단 아래서 꼭대기 까지
+- 계단 :
+    - 각 계단마다 점수 존재
+- 올라가기
+    - 한 번에 한 계단씩 or 두 계단씩
+    - 연속된 세 개의 계단을 모두 밟으면 안됨
+    - 시작점은 계단에 포함 X
+    - 도착 계단은 반드시 밟아야 한다.
 
-4. 각 가장자리에 어떤 백조랑 이어져 있는지 저장
-5. 가장자리에서 빙하 녹일때 다른 백조 있으면 종료
+- 각 층까지의 최대 점수를 저장
+- 현재층까지 오는 경우는 2칸 전이나 1칸전
+- 근데 이전 계단에서 1칸이미 올라온 상태인데 거기서 2칸이면 3칸이 되니까
+- dp를 1,2 로 2가지해주자
+
 '''
 
-ddd = {1:2, 2:1, 0:0}
-
-def is_valid(x,y):
-    global R, C
-    if 0<=x<R and 0<=y<C:
-        return True
-    else:
-        return False
-
-def melt(edge):
-    global day
-    global lake
-    # 녹일 곳 다 녹이고
-    for r,c in edge:
-        lake[r][c] = '.'
-
-    new_edge = []
-    # 가장자리에서 다음 가장 자리 탐색
-    while edge:
-        i,j = edge.pop(0)
-        if not visited[i][j]:
-            # dus 없으면 주변만 탐색해서 다음가장자리 추가
-            for di, dj in ((1, 0), (0, 1), (-1, 0), (0, -1)):
-                ni, nj = i + di, j + dj
-                if is_valid(ni, nj) and lake[ni][nj] == 'X':
-                    if visited[ni][nj]:
-                        visited[i][j] = visited[ni][nj]
-                    new_edge.append((ni, nj))
-        else:
-            # 방문기록이 있다면 bfs 탐색하며 주변에 아직 방문하지 않았거나 물인 지역에 방문표시
-            q = []
-            q.append((i,j))
-            while q:
-                x,y = q.pop(0)
-                for di, dj in ((1, 0), (0, 1), (-1, 0), (0, -1)):
-                    ni, nj = x + di, y + dj
-                    if is_valid(ni,nj):
-                        if visited[ni][nj]:
-                            if ddd[visited[ni][nj]] == visited[x][y]:
-                                # 서로 만나는 경우가 아직 빙하인 경우는 하루 더 있어야 해
-                                if lake[ni][nj] == 'X':
-                                    day+=1
-                                return list(set(new_edge)), True
-                            continue
-                        # 물이면 방문표시 해주고 탐색추가
-                        if lake[ni][nj] == '.':
-                            visited[ni][nj] = visited[x][y]
-                            q.append((ni,nj))
-                        # 가장자리면 방문표시 해주기
-                        if lake[ni][nj] == 'X':
-                            visited[ni][nj] = visited[x][y]
-                            new_edge.append((ni,nj))
-
-    return list(set(new_edge)), False
-
-
-R, C = map(int, input().split())
-lake = [list(input()) for _ in range(R)]
-# for r in lake:
-#     print(r)
-# 가장자리
-edge = []
-# 방문표시
-visited = [[0]*C for _ in range(R)]
-b = 1
-for r in range(R):
-    for c in range(C):
-        if not visited[r][c] and lake[r][c]=='X':
-            for dr,dc in ((1,0),(0,1),(-1,0),(0,-1)):
-                nr,nc = r+dr, c+dc
-                if is_valid(nr,nc) and lake[nr][nc] != 'X':
-                    edge.append((r,c))
-                    break
-                continue
-        if lake[r][c] == 'L':
-            visited[r][c] = b
-            q = []
-            q.append((r,c))
-            while q:
-                i,j = q.pop(0)
-                for di, dj in ((1, 0), (0, 1), (-1, 0), (0, -1)):
-                    ni, nj = i + di, j + dj
-                    if is_valid(ni, nj) and not visited[ni][nj]:
-                        if lake[ni][nj] != 'X':
-                            # 물이면 그냥 다음 탐색에만 추가
-                            visited[ni][nj] = b
-                            q.append((ni, nj))
-                        else:
-                            # 빙하면 다음탐색에는 안넣고 가장자리 큐에만
-                            visited[ni][nj] = b
-                            edge.append((ni,nj))
-            b+=1
-#
-# for r in visited:
-#     print(r)
-
-
-# 1일씩 진행
-day = 0
-while True:
-    edge, result = melt(edge)
-    day+=1
-    # print(f'{day}-------------')
-    # for r in lake:
-    #     print(r)
-    # for r in visited:
-    #     print(r)
-    if result:
-        break
-
-print(day)
+# 계단의 개수
+N = int(input())
+score = [0]+[int(input()) for _ in range(N)]
+print(score)
