@@ -53,6 +53,9 @@ for r in range(n):
     for c in range(n):
         # 각 위치에 대해서 dfs 값을 dp에 저장하며
         # 최장거리 갱신
+        if dp[r][c]:
+            max_move = max(max_move,dp[r][c])
+            continue
         max_move = max(max_move, dfs(r, c))
 
 print(max_move-1)
