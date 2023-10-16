@@ -12,18 +12,20 @@
 - 각 위치에서 3가지 이동을 반복하며 동생을 찾을 때까지 반복
 - BFS 탐색
 '''
+import sys
+from collections import deque
 
-
+input = sys.stdin.readline
 
 N, K = map(int,input().split())
 visited = [-1] * 100001
 
 def bfs(start, end):
-    q = [start]
+    q = deque([start])
     visited[start] = 0
 
     while q:
-        now = q.pop(0)
+        now = q.popleft()
         if now == end:
             return visited[end]
         # 다음 위치 탐색
