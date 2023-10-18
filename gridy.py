@@ -1,62 +1,56 @@
 '''
-숨바꼭질 2
+탈옥
 
-- 수빈이 위치 : N (0~100,000)
-- 동생 위치 : K (0~100,000)
+- 평면도 : H x W
+    - 빈 공간 : '.'
+    - '*' : 벽
+    - '#' : 문
+    - '$' : 죄수의 위치
 
-- 수빈
-    - 걷기 : X - 1 or X + 1
-    - 순간이동 : 2*X
+- 두 죄수를 탈옥시키기 위해서 열어야 하는 문의 최소 개수
 
-- 현재 위치에서 가능한 이동은 총 3가지
-- 각 위치에서 3가지 이동을 반복하며 동생을 찾을 때까지 반복
-- BFS 탐색
-- BFS의 시간복잡도는 O(V+E)인 반면에 다익스트라는 O((V+E)logV)
-- 이문제는 BFS 로 해결하여야 함
+- 경우는 총 2가지가 있다
+    1. 두 죄수가 각각 최소의 길로 탈출하는 경우
+    2. 두 죄수가 같이 최소의 길로 탈출하는 경우
+
+- 각 위치에서 탈출경로를 찾으면서 지금까지 문을 연개수로 한다.
+- 만약 탐색하다가 죄수 1,2 가 서로 만나면 죄수번호 3으로 지정하여
+같이 탈출할 때의 탈출경로를 찾는다.
+
 '''
-import sys
-from collections import deque
+import sys, heapq
 
 input = sys.stdin.readline
 
-N, K = map(int,input().split())
-visited = [-1] * 100001
 
-def bfs(start, end):
-    global cnt
-    q = deque([start])
-    visited[start] = 0
-    while q:
-        now = q.popleft()
-        if now == end:
-            return
-        # 다음 위치 탐색
-        for i, next in enumerate((now + 1, now - 1, now * 2)):
-            # print(i,next)
-            # 더해주는 시간
-            res = 1
-            if i == 2:
-                res = 0
-            if 0 <= next <= 100000:
-                if visited[next] == -1:
-                    visited[next] = visited[now] + res
-                    if i == 2:
-                        q.appendleft(next)
-                    else:
-                        q.append(next)
+T = int(input())
+for tc in range(1, T + 1):
+    H, W = map(int, input().split())
+    prison = [list(input().strip()) for _ in range(H)]
+    print(prison)
+    INF = int(1e9)
+    # 3차원 visited, 죄수 1,2,3
+    visited = [[INF] * W for _ in range(H)]
 
-                elif visited[next] >= visited[now] + res:
-                    visited[next] = visited[now] + res
-                    if i == 2:
-                        q.appendleft(next)
-                    else:
-                        q.append(next)
+    # 죄수들의 위치 구하기
+    i = 1
+    start = []
+    for r in range(H):
+        for c in range(W):
+            if prison[r][c] == '$':
+                start.append((i, r, c))
+                i += 1
+                if i == 3: break
+        if i == 3: break
 
 
-if N == K:
-    print(0)
-else:
-    bfs(N,K)
-    print(visited[K])
+    def escape(start):
+
+        pq = []
+        heapq.heappush(pq, (0,start[0][0],start[0][1],start[0][2]))
+        heapq.heappush(pq, (0,start[1][0],start[1][1],start[1][2]))
+
+        pass
 
 
+    escape(start)
