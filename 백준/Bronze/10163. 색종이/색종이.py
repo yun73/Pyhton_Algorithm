@@ -11,22 +11,20 @@
 import sys
 input = sys.stdin.readline
 
+
 N = int(input())
-area=[0]*N
-place = [[-1]*1000 for _ in range(1000)]
-for n in range(N):
+area=[0]
+place = [[0]*1001 for _ in range(1001)]
+for n in range(1,N+1):
     x, y, width, height = map(int, input().split())
-    area[n] = width*height
-    for i in range(width):
-        for j in range(height):
-            nx,ny = x+i, y+j
-            if place[nx][ny] == -1:
-                place[nx][ny] = n
-                continue
+    area.append((x, y, width, height))
+    for nx in range(x, x+width):
+        place[nx][y:(y+height)] = [n]*height
 
-            if place[nx][ny] != n:
-                area[place[nx][ny]] -= 1
-                place[nx][ny] = n
+for n in range(1,N+1):
+    x, y, width, height = area[n]
+    res = 0
+    for nx in range(x, x+width):
+        res += place[nx].count(n)
+    print(res)
 
-for n in range(N):
-    print(area[n])
