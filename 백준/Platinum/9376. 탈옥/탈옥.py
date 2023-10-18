@@ -87,12 +87,12 @@ for tc in range(1, T + 1):
 
                     if visited[p][nx][ny] > next:
                         visited[p][nx][ny] = next
-                        heapq.heappush(pq, (visited[p][nx][ny], p, nx, ny))
+                        heapq.heappush(pq, (next, p, nx, ny))
 
                     # 만약 둘이 만나면
                     if p != 3 and visited[person[p]][nx][ny] != INF:
-                        if visited[3][nx][ny] > visited[p][x][y] + visited[person[p]][nx][ny]:
-                            visited[3][nx][ny] = visited[p][x][y] + visited[person[p]][nx][ny]
+                        if visited[3][nx][ny] > open + visited[person[p]][nx][ny]:
+                            visited[3][nx][ny] = open + visited[person[p]][nx][ny]
                             heapq.heappush(pq, (visited[3][nx][ny], 3, nx, ny))
 
 
