@@ -43,7 +43,7 @@ while pq:
     if res == 1:
         break
     # 벽 8번 밀어냈으면 종료
-    if cnt >= 7:
+    if cnt >= 8:
         res = 1
         break
 
