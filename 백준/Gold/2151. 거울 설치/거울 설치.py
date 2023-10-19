@@ -78,8 +78,6 @@ def dijk(door):
 
             # 만약 거울이면 해당 위치에서 90도 방향으로 최소 거울 개수 1 추가해주고
             if house[nx][ny] == '!':
-                if visited[nx][ny][before] > mirror:
-                    visited[nx][ny][before] = mirror
                 for d in range(4):
                     # 이전과 같은 방향, 그 반대 방향일때는 제외 90도만 탐색
                     if d == before or d == op_di[before]:
@@ -90,7 +88,7 @@ def dijk(door):
                             continue
                         visited[nnx][nny][d] = mirror+1
                         heapq.heappush(pq, (mirror+1,d,nnx,nny))
-
+    # 디버깅 코드=========================================================
     # for t in range(4):
     #     for r in visited:
     #         for c in r:
@@ -100,6 +98,7 @@ def dijk(door):
     #             print(c[t], end=' ')
     #         print()
     #     print(f'{t}===============')
+    #=====================================================================
     return min(visited[end_x][end_y])
 
 print(dijk(door))
