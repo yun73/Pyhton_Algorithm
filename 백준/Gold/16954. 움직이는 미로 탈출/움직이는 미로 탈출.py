@@ -43,7 +43,7 @@ while pq:
     if res == 1:
         break
     # 벽 8번 밀어냈으면 종료
-    if cnt >= 8:
+    if cnt >= 7:
         res = 1
         break
 
@@ -66,6 +66,7 @@ while pq:
     # 벽 밀어내기
     board = [['.'] * 8] + board
     cnt += 1
+    pq = deque(set(pq))
 
 print(res)
 
