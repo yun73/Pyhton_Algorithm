@@ -15,22 +15,29 @@
 - 활성화 상태인 A 중 몇개 비활성화 >> M 바이트 이상의 메모리 추가확보
 - ci의 합 최소
 
-- m의 합들이 M 이상이 될 때 최소 비용 기록
-- 이전 앱에 최소값이 기록되어 있다면 그게 그 앱의 최소
--
+- m의 합들이 M 이상이 될 때 최소 비용 기록 X
+- cost에 따라 해당 cost 일 때 최대 메모리를 구하기
+- 냅색 알고리즘
 
 '''
 import sys
 input = sys.stdin.readline
 
-
-
 N, M = map(int, input().split())
-m = list(map(int, input().split()))
-c = list(map(int, input().split()))
+memory = list(map(int, input().split()))
+cost = list(map(int, input().split()))
 
-# dp[i][j] :
-dp = [[0]*N for _ in range(N)]
+# dp[i][j] => 1~i번째 앱까지, j의 cost로 확보 가능한 메모리의 최대
+dp = [[0 for _ in range(sum(cost) + 1)] for _ in range(N + 1)]
 
+for i in range(1, N + 1):
+    for j in range(0, sum(cost) + 1):
+        if j >= cost[i - 1]:
+            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - cost[i - 1]] + memory[i - 1])
+        else:
+            dp[i][j] = dp[i - 1][j]
 
-print(min(dp))
+for i, Memory in enumerate(dp[N]):
+    if Memory >= M:
+        print(i)
+        break
