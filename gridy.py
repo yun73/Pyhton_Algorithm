@@ -1,36 +1,85 @@
 '''
-앱
+배열에서 이동
 
-- 앱 :
-    - 실행중 : 한 개, 화면에 보임
-    - 활성화 : 여러개, 화면에 보이지 않아도 메인 메모리에 직전의 상태 기록
+- nxn 짜리 배열
+- 1,1 >> n,n
 
-    - 비활성화 : 메모리 부족상태에서 새로운 앱 실행 시키기 위해 활성화 앱들 중 몇 개 선택하여 메모리로부터 삭제
+- 지나가는 경로의 숫자들 중 최대값과 최소값의 차이가 최소일 때 그 값 출력
 
-- 앱 : N 개 , A1~AN
-    - 각각 mi 바이트 만큼 메모리 사용
-    - 비활성 화 후 다시 실행시 추가 비용 ci
+- 일단 bfs를 이용한 경로 탐색이다
+- 근데 이제 그 경로의 숫자들의 최대, 최소의 차가 최소가 되어야 한다
+- 모든 케이스를 다 확인하기에는 시초
+- 탐색 방향은 상하좌우, visited는 한번만 해줘도 됨
 
-- 새로운 앱 B 실행 : M 바이트 메모리 필요
-- 활성화 상태인 A 중 몇개 비활성화 >> M 바이트 이상의 메모리 추가확보
-- ci의 합 최소
+- 0 <= 최대 - 최소 <= 200
+- 생각 1. 이 범위를 이분탐색?
 
-- m의 합들이 M 이상이 될 때 최소 비용 기록
-- 이전 앱에 최소값이 기록되어 있다면 그게 그 앱의 최소
--
+- 생각 2. 가능한 숫자 범위를 이분 탐색
+    - 시작점 과 끝점이 1과 5 이면 (1,5) 로 시작
+        - 만약 해당 숫자 범위 안에 있는 칸으로만 가서 종료점에 도달한다면
+    - 최소값 후보와, 최대 값 후보를 정하자
+    - 예를 들어 최소 0 최대 8이면
+    최소 값 후보는 0~1 최대값 후보는 5~8
 
 '''
 import sys
+from collections import deque
 input = sys.stdin.readline
 
 
+def bfs(sr,sc,sub):
+    # 해당 경로 까지 가는데 최대 최소 값을 들고가자
+    # 그 차이가 mid 같으면
+    # 최대 최소 visited
+    visited = [[[0,201] for _ in range(n)] for _ in range(n)]
+    q = deque()
+    q.append((sr,sc,arr[sr][sc],arr[sr][sc]))
+    visited[sr][sc] = 1
+    while q:
+        x,y,   = q.popleft()
 
-N, M = map(int, input().split())
-m = list(map(int, input().split()))
-c = list(map(int, input().split()))
-
-# dp[i][j] :
-dp = [[0]*N for _ in range(N)]
+        for dx,dy in ((1,0),(0,1),(-1,0),(0,-1)):
+            nx,ny = x + dx, y + dy
+            if 0<=nx<n and 0<=ny<n and not visited[nx][ny]:
 
 
-print(min(dp))
+
+
+
+
+n = int(input())
+arr = [list(map(int, input().split())) for _ in range(n)]
+for line in arr:
+    print(*line)
+
+max_num = 0
+min_num = 201
+for r in range(n):
+    for c in range(n):
+        if max_num < arr[r][c]:
+            max_num = arr[r][c]
+        if min_num > arr[r][c]:
+            min_num = arr[r][c]
+
+print(max_num,min_num)
+left,right = min_num, max_num
+while left<=right:
+    mid = (left + right)//2
+
+    # 만약 이걸로 돌 수 있다면
+    # 근데 돌았는데 이거보다 더 작은 걸로 가능한 값이 나오면
+    # 그걸 mid로?
+    if bfs(0,0,mid):
+        # 더 작은 최소 값으로 해보자
+        right = mid - 1
+    # 안된다면
+    else:
+        # 더 큰 값으로 해보자
+        left = mid+1
+
+print(mid)
+
+
+
+
+
