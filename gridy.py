@@ -21,36 +21,44 @@
     - 예를 들어 최소 0 최대 8이면
     최소 값 후보는 0~1 최대값 후보는 5~8
 
+- 아니 그냥
+
 '''
 import sys
 from collections import deque
 input = sys.stdin.readline
 
+def bfs(mid):
+    # 최대와 최소의 차이가 mid 이므로
+    # 최소 값인 i 부터 max_num-mid+1 즉 숫자들의 범위가 (i,i+mid) 인 경우에만 탐색해보면 됨
+    for i in range(min_num, max_num-mid+1):
+        s,e = i, i + mid
+        #  만약 시작점과 끝점이 해당 범위 안에 없으면 건너 뛰기
+        if not (s<= arr[0][0] <= e and s<= arr[n-1][n-1] <= e):
+            continue
 
-def bfs(sr,sc,sub):
-    # 해당 경로 까지 가는데 최대 최소 값을 들고가자
-    # 그 차이가 mid 같으면
-    # 최대 최소 visited
-    visited = [[[0,201] for _ in range(n)] for _ in range(n)]
-    q = deque()
-    q.append((sr,sc,arr[sr][sc],arr[sr][sc]))
-    visited[sr][sc] = 1
-    while q:
-        x,y,   = q.popleft()
-
-        for dx,dy in ((1,0),(0,1),(-1,0),(0,-1)):
-            nx,ny = x + dx, y + dy
-            if 0<=nx<n and 0<=ny<n and not visited[nx][ny]:
-
-
-
-
+        visited = [[0]*n for _ in range(n)]
+        q = deque()
+        q.append((0,0))
+        visited[0][0] = 1
+        while q:
+            x,y = q.popleft()
+            # 종료지점 찾으면 가능한거니까 True 반환
+            if (x,y)==(n-1,n-1):
+                return True
+            for dx,dy in ((1,0),(0,1),(-1,0),(0,-1)):
+                nx,ny = x + dx, y + dy
+                if 0<=nx<n and 0<=ny<n and not visited[nx][ny] and s<= arr[nx][ny] <= e:
+                    q.append((nx,ny))
+                    visited[nx][ny] = 1
+    else:
+        return False
 
 
 n = int(input())
 arr = [list(map(int, input().split())) for _ in range(n)]
-for line in arr:
-    print(*line)
+# for line in arr:
+#     print(*line)
 
 max_num = 0
 min_num = 201
@@ -61,23 +69,24 @@ for r in range(n):
         if min_num > arr[r][c]:
             min_num = arr[r][c]
 
-print(max_num,min_num)
-left,right = min_num, max_num
-while left<=right:
+# print(max_num,min_num)
+# 최대 최소 차이의 최소 = 0 , 최대 = max_num-min_num
+left,right = 0, max_num - min_num
+min_mid = 300
+while left <= right:
     mid = (left + right)//2
-
+    # print(mid)
     # 만약 이걸로 돌 수 있다면
-    # 근데 돌았는데 이거보다 더 작은 걸로 가능한 값이 나오면
-    # 그걸 mid로?
-    if bfs(0,0,mid):
+    if bfs(mid):
+        min_mid = min(min_mid,mid)
         # 더 작은 최소 값으로 해보자
         right = mid - 1
     # 안된다면
     else:
         # 더 큰 값으로 해보자
-        left = mid+1
+        left = mid + 1
 
-print(mid)
+print(min_mid)
 
 
 
