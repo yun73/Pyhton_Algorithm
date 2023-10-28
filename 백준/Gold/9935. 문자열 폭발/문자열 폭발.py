@@ -33,9 +33,10 @@ for i in range(len(str_li)):
     # 만약 넣는데 내가 찾는 문자열이 안에 있으면 뺴내자
     # in 연산시 check 안의 요소를 전부 도니까
     # 맨 뒤에서 찾는 문자열 길이 만큼이 찾는 문자열이면 으로 조건 수정
-    if ''.join(check[-len(find):]) == find :
-        for _ in range(len(find)):
-            check.pop()
+    if str_li[i] == find[-1]:
+        if ''.join(check[-len(find):]) == find :
+            for _ in range(len(find)):
+                check.pop()
 
 if check:
     print(''.join(check))
