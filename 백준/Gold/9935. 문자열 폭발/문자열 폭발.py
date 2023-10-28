@@ -35,8 +35,9 @@ for i in range(len(str_li)):
     # 맨 뒤에서 찾는 문자열 길이 만큼이 찾는 문자열이면 으로 조건 수정
     if str_li[i] == find[-1]:
         if ''.join(check[-len(find):]) == find :
-            for _ in range(len(find)):
-                check.pop()
+            del check[-len(find):]
+            # for _ in range(len(find)):
+            #     check.pop()
 
 if check:
     print(''.join(check))
