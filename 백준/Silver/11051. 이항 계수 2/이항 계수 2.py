@@ -18,10 +18,10 @@ def BC(n,k):
         return visited[n][k]
 
     if k == 1:
-        visited[n][k] = n
+        visited[n][k] = n%10007
         return visited[n][k]
 
-    visited[n][k] = BC(n-1,k) + BC(n-1,k-1)
+    visited[n][k] = (BC(n-1,k) + BC(n-1,k-1))%10007
     return visited[n][k]
 
 
@@ -29,4 +29,4 @@ def BC(n,k):
 N, K = map(int, input().split())
 visited = [[0]*(K+1) for _ in range(N+1)]
 BC(N,K)
-print(visited[N][K]%10007)
+print(visited[N][K])
