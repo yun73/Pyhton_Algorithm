@@ -1,59 +1,114 @@
 '''
-벽 부수고 이동하기2
+부산의 해적
 
-- 맵 : N x M 크기
-    - 0 : 이동 가능
-    - 1 : 벽
+- 보물지도 : NxM
+    - 수아 : Y
+    - 해적 : V
+    - 섬 : I
+    - 바다 : .
 
-- 이동 : 상하좌우
-- 해당 벽 부쉈을 때 이동할 수 있는 칸의 개수를 기록
-- 새로운 배열을 만들어주고
-    - 벽이 아닌 구간에서 BFS 를 돌려주고
-    - 다 돌면 돌 수 있는 개수를 지나다니면서 만난 벽들에 개수를 추가해줘
+- 이동 상하좌우
+- 해적
+    - 매번 수아가 이동한 후, 해적은 수아의 이동에 대해서 이동할지 멈춰있을지 결정
 
-- 결과 배열을 하나 더 만들어줬는데 그냥 입력받은 배열의 벽 숫자들에 + 를 해줘도 됨
+- 해적과 수직선, 수평선상에 수아가 있고, 오직 그 사이에 바다만 있을 때 수아는 죽는다.
+- 만약, 수아가 아직 죽지 않았고, 보물 위치에 있다면, 수아는 보물은 얻은 것이다.
+
+- 해적을 먼저 움직여서 각 칸들이 해적이 몇번움직였을 때 위험한 지 저장하자
+- 각 칸에는 최소로 움직였을 때 죽일수 있는 경우가 우선적으로 와야 함
+- 그러면서 동시에 움직이면서 갱신도 해줘야 해
 '''
 import sys
 from collections import deque
 input = sys.stdin.readline
 
-def bfs(sr,sc):
-    q = deque()
-    wall = set()
-    cnt = 1
-    q.append((sr,sc))
-    visited[sr][sc] = 1
+# 해적 움직임
+def V_move(q):
     while q:
-        x,y = q.popleft()
+        x, y, turn = q.popleft()
+        # 현재 위치에서 죽일 수 있는 곳 다 표시하고 상하좌우 이동
         for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
-            nx,ny = x+dx, y+dy
-            if 0<=nx<N and 0<=ny<M:
-                if not arr[nx][ny] and not visited[nx][ny]:
-                    q.append((nx,ny))
-                    visited[nx][ny] = 1
-                    cnt += 1
+            for dis in range(1,max(N,M)):
+                nx,ny = x+dis*dx,y+dis*dy
+                # 일단 범위 벗어나면 브레이크
+                if not(0<=nx<N and 0<=ny<M):
+                    break
+                # 섬 나오면 break
+                if arr[nx][ny] == 'I':
+                    break
+                # # 만약 해당 방향에 나랑 같은 시야 값 가지고 있으면 브레이크
+                # if arr[nx][ny] <= arr[x][y]:
+                #     break
+                if arr[nx][ny] <= turn:
                     continue
-                if arr[nx][ny]:
-                    wall.add((nx,ny))
+                arr[nx][ny] =min(arr[nx][ny],turn)
+                if visited[nx][ny] == -1:
+                    visited[nx][ny] = visited[x][y] + abs(nx - x) + abs(ny - y)
+                q.append((nx,ny,turn + abs(nx-x) + abs(ny-y)))
 
-    for i,j in wall:
-        arr[i][j] += cnt
+
+def find_treasure(sr,sc):
+    go = deque()
+    go.append((sr,sc))
+    visit[sr][sc] = 0
+    while go:
+        x,y = go.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < N and 0 <= ny < M and arr[nx][ny] != 'I' and visit[nx][ny] == -1 and visit[x][y] + 1 < arr[nx][ny]:
+                visit[nx][ny] = visit[x][y] + 1
+                go.append((nx,ny))
+
+    if visit[tr][tc] != -1 and visit[tr][tc] < arr[tr][tc]:
+        return 'YES'
+    else:
+        return 'NO'
 
 
-N,M = map(int,input().split())
-arr = [list(map(int,input().rstrip())) for _ in range(N)]
-visited = [[0]*M for _ in range(N)]
-# print(visited)
+N,M = map(int, input().split())
+arr = [list(input().rstrip()) for _ in range(N)]
+# print(arr)
+INF = int(1e9)
+visited = [[-1]*M for _ in range(N)]
+visit = [[-1]*M for _ in range(N)]
+sr,sc = 0,0
+tr,tc = 0,0
+q = deque()
 for r in range(N):
     for c in range(M):
-        if visited[r][c] or arr[r][c]:
+        if arr[r][c] == 'I':
             continue
-        if not arr[r][c] and not visited[r][c]:
-            bfs(r,c)
+        if arr[r][c] == '.':
+            arr[r][c] = INF
+            continue
+        if arr[r][c] == 'Y':
+            sr,sc = r,c
+            arr[r][c] = INF
+            continue
+        if arr[r][c] == 'T':
+            tr, tc = r, c
+            arr[r][c] = INF
+            continue
+        if arr[r][c] == 'V':
+            q.append((r,c,0))
+            arr[r][c] = 0
+            visited[r][c] = 0
+            continue
 
-for r in range(N):
-    for c in range(M):
-        print(arr[r][c]%10, end = '')
-    print()
+V_move(q)
 
+print(find_treasure(sr,sc))
+# for line in visited:
+#     print(*line)
+# print('-----')
+# for line in arr:
+#     print(*line)
+# print('-----')
+# for line in visit:
+#     print(*line)
 
+A,B, C = map(int, input().split())
+print((A+B)%C)
+print(((A%C) + (B%C))%C)
+print( (A*B)%C)
+print(((A%C) * (B%C))%C)

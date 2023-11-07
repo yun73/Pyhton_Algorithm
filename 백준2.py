@@ -25,59 +25,112 @@ input = sys.stdin.readline
 # 해적 움직임
 def V_move(q):
     while q:
-        x, y, turn = q.popleft()
+        x, y = q.popleft()
         # 현재 위치에서 죽일 수 있는 곳 다 표시하고 상하좌우 이동
         for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
-            for dis in range(1,max(N,M)-1):
-                nx,ny = x+dis*dx,y+dis*dy
-                # 범위 넘어가면 해당 방향으로 더 못감
-                if not(0<=nx<N and 0<=ny<M):
-                    break
-                # 섬 만나면 못감
-                if arr[nx][ny] == 'I':
-                    break
-                if dis == 1:
-                    q.append((nx, ny, turn + 1))
-                if visited[nx][ny] != INF:
-                    break
 
+            nx,ny = x+dx,y+dy
+            # 일단 범위 벗어나면 브레이크
+            if not(0<=nx<N and 0<=ny<M):
+                continue
+            # 섬 나오면 break
+            if arr[nx][ny] == 'I':
+                continue
 
-                # 내가 지금 보는 턴 보다 큰 곳 기록
-                if turn < visited[nx][ny]:
-                    visited[nx][ny] = turn
-                
+            if visited[nx][ny] == INF:
+                visited[nx][ny] = visited[x][y] + 1
+                q.append((nx,ny))
+    # 다 끝나면 arr 에 최소 값들만 저장
+    for i in range(N):
+        stack = []
+        val = [0, 0, float('inf')]  # 좌표 idx_0 ~ idx_1 까지 idx_2값으로 채움
+        for j in range(M):
+            if arr[i][j] != 'I':
+                val[2] = min(val[2], visited[i][j]); val[1] = j
+            elif arr[i][j] == 'I' and val[2] != float('inf'):
+                stack.append(val)
+                val = [j + 1, j + 1, float('inf')]
+            else:
+                val = [j + 1, j + 1, float('inf')]
+        if val[2] != float('inf'): stack.append(val)
+        for s, e, val in stack:
+            for j in range(s, e + 1):
+                arr[i][j] = val
 
+    for j in range(M):
+        stack = []
+        val = [0, 0, float('inf')]  # 좌표 idx_0 ~ idx_1 까지 idx_2값으로 채움
+        for i in range(N):
+            if arr[i][j] != 'I':
+                val[2] = min(val[2], visited[i][j]); val[1] = i
+            elif arr[i][j] == 'I' and val[2] != float('inf'):
+                stack.append(val)
+                val = [i + 1, i + 1, float('inf')]
+            else:
+                val = [i + 1, i + 1, float('inf')]
+        if val[2] != float('inf'): stack.append(val)
+        for s, e, val in stack:
+            for i in range(s, e + 1):
+                arr[i][j] = min(arr[i][j], val)
+
+def find_treasure(sr,sc):
+    go = deque()
+    go.append((sr,sc))
+    visit[sr][sc] = 0
+    while go:
+        x,y = go.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < N and 0 <= ny < M and arr[nx][ny] != 'I' and visit[nx][ny] == -1 and visit[x][y] + 1 < arr[nx][ny]:
+                visit[nx][ny] = visit[x][y] + 1
+                go.append((nx,ny))
+
+    if visit[tr][tc] != -1 and visit[tr][tc] < visited[tr][tc]:
+        return 'YES'
+    else:
+        return 'NO'
 
 
 N,M = map(int, input().split())
 arr = [list(input().rstrip()) for _ in range(N)]
 # print(arr)
 INF = int(1e9)
-visited = [[0]*M for _ in range(N)]
+visited = [[INF]*M for _ in range(N)]
+visit = [[-1]*M for _ in range(N)]
 sr,sc = 0,0
+tr,tc = 0,0
 q = deque()
-i = 0
 for r in range(N):
     for c in range(M):
-        if i == 2:
-            break
-        if arr[r][c] in '.I':
+        if arr[r][c] == 'I':
+            continue
+        if arr[r][c] == '.':
             arr[r][c] = INF
             continue
         if arr[r][c] == 'Y':
             sr,sc = r,c
             arr[r][c] = INF
-            i +=1
+            continue
+        if arr[r][c] == 'T':
+            tr, tc = r, c
+            arr[r][c] = INF
             continue
         if arr[r][c] == 'V':
-            q.append((r,c,1))
-            arr[r][c] = 1
-            visited[r][c] = 1
-            i +=1
+            q.append((r,c))
+            arr[r][c] = 0
+            visited[r][c] = 0
             continue
 
 V_move(q)
+# print(min(visited[1]))
+print(find_treasure(sr,sc))
+# for line in visited:
+#     print(*line)
+# print('-----')
+# for line in arr:
+#     print(*line)
+# print('-----')
+# for line in visit:
+#     print(*line)
 
-for line in visited:
-    print(*line)
 
