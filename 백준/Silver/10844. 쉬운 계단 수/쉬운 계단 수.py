@@ -1,6 +1,6 @@
 N = int(input())
 
-dp = [[0] * 12 for _ in range(101)]
+dp = [[0] * 12 for _ in range(N+1)]
 
 for i in range(2,11):
     dp[1][i] = 1
