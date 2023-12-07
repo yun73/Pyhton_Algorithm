@@ -7,7 +7,7 @@ import sys
 input = sys.stdin.readline
 
 N = int(input())
-times = sorted(list(map(int, input().split())))
+times = sorted(map(int, input().split()))
 
 res = 0
 for i in range(len(times)):
