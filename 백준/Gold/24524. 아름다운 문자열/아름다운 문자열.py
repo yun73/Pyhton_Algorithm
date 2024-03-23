@@ -1,21 +1,11 @@
-import sys
-input = sys.stdin.readline
+S = input()
+t = input()
+dp = [0]*(len(t)+1)
+dp[0] = int(1e9)
+t_idx = {a:idx+1 for idx,a in enumerate(t)}
 
-S = input().rstrip()
-T = input().rstrip()
-location = {}
-for i in range(len(T)):
-    location.setdefault(T[i],i)
-
-arr = [0] * (len(T))
 for word in S:
-    if word not in location:
-        continue
-    if location[word] == 0:
-        arr[location[word]] += 1
-    else:
-        if arr[location[word]-1] > 0:
-            arr[location[word]-1] -= 1
-            arr[location[word]] += 1
+    if word in t_idx and dp[t_idx[word]-1] > dp[t_idx[word]]:
+        dp[t_idx[word]] += 1
 
-print(arr[-1])
+print(dp[-1])
