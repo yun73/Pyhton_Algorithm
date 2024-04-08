@@ -25,14 +25,10 @@ def bfs_bridge(edge):
     global min_dis
     # 다른 섬의 탐색 지점 만날때까지 탐색
     while edge:
-        # 각 차례의 edge 들을 다 돌았을 때 최소 값이 나왔다면 종료
-        if min_dis != int(1e9):
-            return
-        
         for _ in range(len(edge)): # 현재 배열에 담긴 가장 자리들 수만큼만 반복
             # 현재 탐색 위치
             x,y,now = edge.popleft()
-    
+
             # 4방향 탐색
             for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
                 nx, ny = x + dx, y + dy
@@ -44,12 +40,15 @@ def bfs_bridge(edge):
                     # 섬이나 다른 섬에서 이미 탐색한 곳이면 최단경로랑 비교
                     if visited[nx][ny] >= 0 and arr[nx][ny] != now:
                         min_dis = min(visited[nx][ny] + visited[x][y],min_dis)
+
                     # 방문하지 않은 곳이면 어느 섬에서 왔는지 정보 저장하고 큐에 추가
                     if visited[nx][ny] == -1:
                         arr[nx][ny] = now
                         visited[nx][ny] = visited[x][y] + 1
                         edge.append((nx,ny,now))
-
+                        # 각 차례의 edge 들을 다 돌았을 때 최소 값이 나왔다면 종료
+    if min_dis != int(1e9):
+        return
 
 
 N = int(input())
