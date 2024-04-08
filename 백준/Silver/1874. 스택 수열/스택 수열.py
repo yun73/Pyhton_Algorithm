@@ -1,39 +1,26 @@
-# 스택 수열
-# LIFO
-# push 는  +
-# pop 은  -
 import sys
+input = sys.stdin.readline
 
-n = int(sys.stdin.readline())
-# 찾아야할 수열의 첫 숫자
-before = 1
-# 숫자 저장
+n = int(input())
 stack = []
-# 스택 연산 저장
-re = ''
+before = 1
+res = ''
 for _ in range(n):
-    # 찾아야할 숫자
-    num = int(sys.stdin.readline())
-    # pop 할 때 뒤에 나올 숫자를 빼버리면 안됨
-    # if num in stack: 이거 때문에 시간 초과 나는듯
-    # 리스트 안에 있는 지 찾으면 리스트를 한바퀴 도는 거나 똑같으니까
-    # 찾아야할 숫자이하에서 나올 때까지
+    num = int(input()) # 찾을 숫자
     if num >= before:
         for i in range(before, num + 1):
             stack.append(i)
-            re += '+\n'
-        # n개의 숫자를 넣으면서 마지막에 넣은 갑
-        before = num + 1
-        # 찾은 숫자 꺼내서 수열 만들기
-        stack.pop()
-        re += '-\n'
+            res += '+\n'
+
+        before = num + 1 # 마지막에 넣은 값
+        stack.pop() # 찾은 숫자 빼기
+        res += '-\n'
     else:
-        # 스택의 맨ㅇ
         if stack[-1] != num:
-            re = "NO"
-            break # for
+            res = "NO"
+            break
         else:
             stack.pop()
-            re += '-\n'
+            res += '-\n'
 
-print(re)
+print(res)
