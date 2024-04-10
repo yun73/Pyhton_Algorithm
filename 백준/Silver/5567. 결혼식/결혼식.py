@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 N = int(input())
 M = int(input())
 friends = [[] for _ in range(N+1)]
