@@ -1,10 +1,5 @@
-
-import sys
-input = sys.stdin.readline
-
 def solve():
-    N, K = map(int,input().split())
-    students = list(map(int, input().split()))
+    N, K, *students= map(int, open(0).read().split())
     group = [students[i+1]-students[i] for i in range(len(students)-1)]
     group.sort()
     for i in range(K - 1):
