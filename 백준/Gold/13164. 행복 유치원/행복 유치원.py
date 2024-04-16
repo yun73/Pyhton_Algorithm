@@ -1,28 +1,15 @@
-'''
-행복유치원
+import sys
+input = sys.stdin.readline
 
-- 유치원생 : N 명 (키 순서대로 일렬)
-- 조 : K 개
-    - 각 조에 원생 적어도 한명, 속한 원생들은 서로 인접
+def solve():
+    N, K = map(int,input().split())
+    students = list(map(int, input().split()))
+    group = [0]*(N-1)
+    for i in range(1,N):
+        group[i-1] = students[i]-students[i-1]
+    group.sort()
+    # print(group)
+    cost = sum(group[:N-1-(K-1)]) # 키 차이 큰 얘들을 혼자인 조가 되게
+    return cost
 
-- 단체 티셔츠 비용 : 각 조마다 (가장 키 큰 원생 - 키 작은 원생)
-
-- 비용의 합을 최소로 하자
-
-1. 키 순서대로 서 있으므로 각 조로 끊게 되면 조의 맨앞, 맨뒤 인덱스의 차이를 구하면 됨
-2. 각 조에 한명씩 있을 때 가장 최소 비용이다
-3. [1,3,5,6,10] 이런식으로 있을 때 3개의 조를 만들기 위해서는 전체 구간을 3개의 구간으로 나누는 것이랑 같다
-왜냐하면 각 조의 원생들의 키는 서로 인접해야 하므로
-4. 구간 나누기 이므로 각 구간 모두 차이를 구하고 거기에서 차이가 많이 나는 구간을 기준점으로 삼으면 된다
-5. 선택해야할 기준점의 개수는 K-1 개이다.
-'''
-
-N, K = map(int,input().split())
-students = list(map(int, input().split()))
-group = [0]*(N-1)
-for i in range(1,N):
-    group[i-1] = students[i]-students[i-1]
-group.sort()
-# print(group)
-cost = sum(group[:N-1-(K-1)])
-print(cost)
+print(solve())
