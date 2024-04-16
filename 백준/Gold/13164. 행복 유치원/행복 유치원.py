@@ -1,3 +1,4 @@
+
 import sys
 input = sys.stdin.readline
 
@@ -6,7 +7,8 @@ def solve():
     students = list(map(int, input().split()))
     group = [students[i+1]-students[i] for i in range(len(students)-1)]
     group.sort()
-    cost = sum(group[:N-1-(K-1)]) # 키 차이 큰 얘들을 혼자인 조가 되게
-    return cost
+    for i in range(K - 1):
+        group.pop()
+    return sum(group)
 
 print(solve())
