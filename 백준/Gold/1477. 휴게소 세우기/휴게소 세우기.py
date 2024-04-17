@@ -1,6 +1,4 @@
 '''
-휴게소 없는 구간의 길이의 최댓값을 최소로 하기
-
 구간의 길이들을 정렬
 가장 긴 구간을 찾아야 함
 구간 찾으면 해당 구간 반으로 쪼개져야 함
@@ -15,23 +13,25 @@
 import sys
 input = sys.stdin.readline
 
-N, M ,L = map(int, input().split())
-loc = [0] + sorted(map(int, input().split())) + [L]
-dis = sorted( loc[i]-loc[i-1] for i in range(1,N+2))
-left = 1
-right = max(dis)-1
-while left <= right:
-    mid = (left+right)//2
-    cnt = 0
-    # 현재 M개 건물 사이 거리로 각 구간마다 몇개의 휴게소를 지을 수 있는 지 확인
-    for i in range(1,len(loc)):
-        if loc[i]-loc[i-1]-1 >= mid : # 구간 사이의 거리가 M 개 휴게소 사이 거리보다 크다면
+def solve():
+    N, M ,L = map(int, input().split())
+    loc = [0] + sorted(map(int, input().split())) + [L]
+    dis = sorted( loc[i]-loc[i-1] for i in range(1,N+2))
+    left = 1
+    right = max(dis)-1
+    while left <= right:
+        mid = (left+right)//2
+        cnt = 0
+        # 현재 M개 건물 사이 거리로 각 구간마다 몇개의 휴게소를 지을 수 있는 지 확인
+        for i in range(1,len(loc)):
             # 지을 수 있는 휴게소 만큼 개수 추가
             cnt += (loc[i]-loc[i-1]-1)//mid
+    
+        if cnt > M: # 만약 지을 수 있는 휴게소 개수가 더 많다면 간격 더 크게하기
+            left = mid + 1
+        else:
+            right = mid - 1
+    
+    return left
 
-    if cnt > M: # 만약 지을 수 있는 휴게소 개수가 더 많다면 간격 더 크게하기
-        left = mid + 1
-    else:
-        right = mid - 1
-
-print(left)
+print(solve())
