@@ -5,12 +5,15 @@ def solve():
     N = int(input())
     arr = []
     for i in range(N):
-        for num in list(map(int, input().split())):
+        li = list(map(int, input().split()))
+        for num in li:
             if len(arr) >= N:
-                heapq.heappush(arr,max(num,heapq.heappop(arr)))
+                if arr[0] < num:
+                    heapq.heappop(arr)
+                    heapq.heappush(arr,num)
                 continue
             heapq.heappush(arr,num)
-            
+
     return heapq.heappop(arr)
 
 print(solve())
